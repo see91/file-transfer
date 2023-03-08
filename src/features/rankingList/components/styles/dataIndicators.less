@@ -1,0 +1,60 @@
+ul,
+li {
+  list-style: none;
+}
+
+.ranking-list-data-indicators {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  li {
+    display: flex;
+    padding: 34px;
+    width: 33%;
+    width: 33%;
+    margin-left: 32px;
+    border-radius: 10px;
+    align-items: center;
+    background: #FFFFFF;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    img {
+      width: 130px;
+      height: 135px;
+      margin-bottom: 30px;
+    }
+
+    >div {
+      display: flex;
+      flex-direction: column;
+
+      span {
+        font-family: 'Archivo';
+        font-style: normal;
+        line-height: 24px;
+        text-align: center;
+
+        &:first-child {
+          font-weight: 400;
+          font-size: 18px;
+          color: #333333;
+        }
+
+        &:last-child {
+          font-weight: 600;
+          font-size: 24px;
+          color: #503A86;
+          margin-top: 10px;
+        }
+      }
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}

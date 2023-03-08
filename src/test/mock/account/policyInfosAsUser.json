@@ -1,0 +1,22 @@
+{
+  "list": [
+    {
+      "creator_id": "",
+      "consumer": "",
+      "consumer_id": "",
+      "proposer_id": "",
+      "status": "",
+      "gas": "",
+      "tx_hash": "",
+      "hrac": "",
+      "policy_id":"user",
+      "start_at": "",
+      "end_at": "",
+      "created_at": "",
+      "label":"",
+      "policy_label_id":"",
+      "creator":""
+    }
+  ],
+  "total": "1"
+}

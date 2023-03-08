@@ -1,0 +1,267 @@
+.upload_page {
+  min-height: calc(100vh - 344px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+
+  .upload_page_top {
+    width: 400px;
+    display: flex;
+    margin-bottom: 16px;
+    align-items: center;
+    justify-content: space-between;
+
+    .title {
+      font-family: 'Archivo';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      color: #503A86;
+    }
+
+    .ant-upload {
+      border: none;
+      padding: 0;
+    }
+  }
+
+  .ant-upload-list {
+    display: none;
+  }
+
+  .upload_page_item {
+    // min-height: calc(100vh - 344px);
+    // width: 100%;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // font-size: 14px;
+
+    .ant-upload.ant-upload-drag {
+      width: 400px;
+      // width: 800px;
+      // height: 370px;
+      border-radius: 10px;
+      border: none;
+      background-color: #ffffff;
+      padding: 50px 40px 0 !important;
+      box-sizing: border-box;
+      transition: .5s;
+      border: 2px solid transparent;
+
+      &:hover {
+        transition: .5s;
+        border: 2px solid #503A86;
+      }
+
+      div {
+        margin-bottom: 30px;
+        color: #4A4A4A;
+      }
+
+      .drag_title {
+        font-size: 20px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        line-height: 28px;
+        display: flex;
+        align-items: center;
+
+        span {
+          font-family: 'Archivo';
+          font-style: normal;
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 20px;
+          color: #98989A;
+          text-align: left;
+          margin-left: 10px;
+        }
+      }
+
+      .tag {
+        color: #503A86;
+        font-style: normal;
+        font-weight: 500;
+      }
+
+      .drag_tip {
+        font-family: 'Archivo';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+        color: #98989A;
+        text-align: left;
+      }
+
+      .drag_btn {
+        margin: 0 auto;
+        margin-top: 50px;
+        width: 200px;
+        height: 60px;
+        background: #503A86;
+        border-radius: 4px;
+        color: #fff;
+        line-height: 60px;
+      }
+    }
+  }
+
+  .visib {
+    display: none !important;
+  }
+
+  .upload_list_area {
+    width: 400px;
+  }
+
+  .upload_list {
+    // min-height: calc(100vh - 344px);
+    // width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+
+    &_box {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 20px;
+      border-radius: 6px;
+      border: 1px solid #DBDBDB;
+    }
+
+    &_item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #DBDBDB;
+      padding: 15px 0;
+
+      .upload_list_item_left {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img {
+          width: 34px;
+          height: 42px;
+          margin-right: 10px;
+        }
+      }
+
+    }
+
+    &_item:last-child {
+      border-bottom: none;
+    }
+
+    &_item.item_title {
+      font-size: 16px;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      color: #6E6E6E;
+      padding: 11px 0;
+
+      div:last-child {
+        color: #fff;
+        width: 160px;
+        height: 40px;
+        background: #503A86;
+        border-radius: 4px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+      }
+    }
+
+    .form_item {
+      margin-top: 20px;
+      width: 100%;
+
+      .ant-radio-group {
+        .ant-radio-checked {
+          .ant-radio-inner {
+            border: 2px solid #503A86;
+
+            &::after {
+              background-color: #503A86;
+            }
+          }
+        }
+      }
+    }
+
+    .form_btn {
+      text-align: center;
+    }
+  }
+}
+
+.flex_row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload_success {
+  min-height: calc(100vh - 344px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+
+  &_box {
+    width: 55%;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid #DBDBDB;
+    text-align: center;
+    padding: 60px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      color: #503A86;
+    }
+  }
+}
+
+.success_tip {
+  font-size: 20px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #4A4A4A;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.upload_success_btn {
+  width: 200px;
+  height: 60px;
+  background: #503A86;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 60px;
+  text-align: center;
+  margin-top: 50px;
+  cursor: pointer;
+}
+
+.upload_success_btn.btn_right {
+  background: #E9E9E9;
+  color: #939CB0;
+  margin-left: 20px;
+}
