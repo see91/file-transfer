@@ -15,34 +15,34 @@ import publishedPolicyInfos from "./account/publishedPolicyInfos.json";
 //   return {};
 // });
 
-Mock.mock(/http:\/\/dev_domain.com\/account\/get/, "post", () => {
-  return getAccountInfo;
-});
-Mock.mock(/http:\/\/dev_domain.com\/auth\/unlock/, "post", () => {
-  return unlockData;
-});
-Mock.mock(/http:\/\/dev_domain.com\/auth\/me/, "get", () => {
-  return meData;
-});
-Mock.mock(/http:\/\/dev_domain.com\/file\/list/, "post", () => {
-  return fileListData;
-});
-Mock.mock(/http:\/\/dev_domain.com\/file\/detail/, "post", () => {
-  return fileDetail;
-});
-Mock.mock(/http:\/\/dev_domain.com\/account\/uploadedFiles/, "post", () => {
-  return uploadedFiles;
-});
-Mock.mock(/http:\/\/dev_domain.com\/account\/filesInfo/, "post", () => {
-  return filesInfo;
-});
-Mock.mock(/http:\/\/dev_domain.com\/account\/policyInfosAsUser/, "post", () => {
-  return policyInfosAsUser;
-});
-Mock.mock(
-  /http:\/\/dev_domain.com\/account\/publishedPolicyInfos/,
-  "post",
-  () => {
-    return publishedPolicyInfos;
-  },
-);
+// Mock.mock(/http:\/\/dev_domain.com\/account\/get/, "post", () => {
+//   return getAccountInfo;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/auth\/unlock/, "post", () => {
+//   return unlockData;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/auth\/me/, "get", () => {
+//   return meData;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/file\/list/, "post", () => {
+//   return fileListData;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/file\/detail/, "post", () => {
+//   return fileDetail;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/account\/uploadedFiles/, "post", () => {
+//   return uploadedFiles;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/account\/filesInfo/, "post", () => {
+//   return filesInfo;
+// });
+// Mock.mock(/http:\/\/dev_domain.com\/account\/policyInfosAsUser/, "post", () => {
+//   return policyInfosAsUser;
+// });
+// Mock.mock(
+//   /http:\/\/dev_domain.com\/account\/publishedPolicyInfos/,
+//   "post",
+//   () => {
+//     return publishedPolicyInfos;
+//   },
+// );

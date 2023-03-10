@@ -30,7 +30,8 @@ export const getUserCache = (showMessage: boolean = true) => {
 };
 
 export const getUserInfo = async () => {
-  const user = await getLoginedUserInfo();
+  // const user = await getLoginedUserInfo();
+  const user = storage.getItem(cache_user_key);
   if (!!user) {
     storage.setItem(cache_user_key, user);
   } else {
@@ -53,9 +54,7 @@ export const getUserDetailInfo = async () => {
 };
 
 export const getUserDetailCache = (showMessage: boolean = true) => {
-  console.log(cache_user_details_key,'djskfljdsklfjdklsfdsfjdsjfkdjsklf ');
   const userInfo = storage.getItem(cache_user_details_key);
-  
 
   if (!userInfo) {
     if (showMessage) {

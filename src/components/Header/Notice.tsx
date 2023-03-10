@@ -8,23 +8,23 @@ const Notice = () => {
   const navigate = useNavigate();
   const [unreadTotal, setUnreadTotal] = useState<number>(0);
 
-  const _getUserInfo = async () => {
-    //1: login failed //2: login success
+  // const _getUserInfo = async () => {
+  //   //1: login failed //2: login success
 
-    setInterval(() => {
-      const user = getUserCache(false);
+  //   setInterval(() => {
+  //     const user = getUserCache(false);
 
-      if (!user) {
-        return;
-      }
-      const userDetailInfo = getUserDetailCache();
-      if (!userDetailInfo) {
-        return;
-      }
-      const { account_id, encrypted_pk } = userDetailInfo;
-      _fetch(account_id, encrypted_pk);
-    }, 1000 * 5);
-  };
+  //     if (!user) {
+  //       return;
+  //     }
+  //     const userDetailInfo = getUserDetailCache();
+  //     if (!userDetailInfo) {
+  //       return;
+  //     }
+  //     const { account_id, encrypted_pk } = userDetailInfo;
+  //     _fetch(account_id, encrypted_pk);
+  //   }, 1000 * 5);
+  // };
 
   const _fetch = async (account_id: string, encrypted_pk: string) => {
     const { code, data } = await getUnreadTotal({
@@ -37,7 +37,7 @@ const Notice = () => {
   };
 
   useEffect(() => {
-    _getUserInfo();
+    // _getUserInfo();
   }, []);
 
   return (

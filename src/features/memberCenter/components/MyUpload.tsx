@@ -83,26 +83,26 @@ export const MyUpload = () => {
     }
   };
 
-  useEffect(() => {
-    const user = getUserCache();
-    setUser(user);
+  // useEffect(() => {
+  //   const user = getUserCache();
+  //   setUser(user);
 
-    if (!user) {
-      return;
-    }
+  //   if (!user) {
+  //     return;
+  //   }
 
-    const userDetailInfo = getUserDetailCache();
-    setUserDetails(userDetailInfo);
+  //   const userDetailInfo = getUserDetailCache();
+  //   setUserDetails(userDetailInfo);
 
-    (async () => {
-      if (!!userDetailInfo && !!userDetailInfo.avatar) {
-        const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
-        setAvatar(avatarStr);
-      }
+  //   (async () => {
+  //     if (!!userDetailInfo && !!userDetailInfo.avatar) {
+  //       const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
+  //       setAvatar(avatarStr);
+  //     }
 
-      await _getAccountUploadedFiles(1);
-    })();
-  }, []);
+  //     await _getAccountUploadedFiles(1);
+  //   })();
+  // }, []);
 
   return (
     <div>

@@ -10,11 +10,11 @@ import { MyUpload } from "../components/MyUpload";
 import imgUrl from "@/assets/img/avatar.png";
 import editUrl from "../assets/edit_icon.svg";
 import OvalButton from "@/components/Button/OvalButton";
-import {
-  getAvatarBase64String,
-  getUserCache,
-  getUserDetailCache,
-} from "@/features/auth/api/getLoginedUserInfo";
+// import {
+//   getAvatarBase64String,
+//   getUserCache,
+//   getUserDetailCache,
+// } from "@/features/auth/api/getLoginedUserInfo";
 import Emitter from "@/lib/emitter";
 import dayjs from "dayjs";
 import { getUserFileTotal, getUserShareTotal } from "../api/account";
@@ -72,28 +72,28 @@ export const MemberCenter = () => {
     }
   };
 
-  const getUserInfo = async () => {
-    const user = getUserCache();
-    setUser(user);
+  // const getUserInfo = async () => {
+  //   const user = getUserCache();
+  //   setUser(user);
 
-    const userDetailInfo = getUserDetailCache();
+  //   const userDetailInfo = getUserDetailCache();
 
-    const ary: any = [];
-    JSON.parse(userDetailInfo.ranking).forEach((x) => {
-      ary.push(JSON.parse(x));
-    });
-    userDetailInfo.ranking = ary;
-    _fetch(userDetailInfo.account_id);
+  //   const ary: any = [];
+  //   JSON.parse(userDetailInfo.ranking).forEach((x) => {
+  //     ary.push(JSON.parse(x));
+  //   });
+  //   userDetailInfo.ranking = ary;
+  //   _fetch(userDetailInfo.account_id);
 
-    setUserDetails(userDetailInfo);
+  //   setUserDetails(userDetailInfo);
 
-    if (!!userDetailInfo && !!userDetailInfo.avatar) {
-      const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
-      if (!!avatarStr) {
-        setAvatar(avatarStr);
-      }
-    }
-  };
+  //   if (!!userDetailInfo && !!userDetailInfo.avatar) {
+  //     const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
+  //     if (!!avatarStr) {
+  //       setAvatar(avatarStr);
+  //     }
+  //   }
+  // };
 
   const _fetch = async (account_id) => {
     const params = {
@@ -134,7 +134,7 @@ export const MemberCenter = () => {
       // );
       // setUserDetails(newuserDetailInfo);
     });
-    window.setTimeout(async () => await getUserInfo(), 0);
+    // window.setTimeout(async () => await getUserInfo(), 0);
   }, []);
 
   const editTitle = () => {

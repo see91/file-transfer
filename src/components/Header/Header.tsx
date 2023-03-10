@@ -231,20 +231,20 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
           {t<string>("header-a-tab-1")}
           <div className="line"></div>
         </div>
-        <div
+        {/* <div
           className={activityKey === "faucet" ? "activity" : ""}
           onClick={() => tabClick("faucet")}
         >
           {t<string>("header-a-tab-3")}
           <div className="line"></div>
-        </div>
-        <div
+        </div> */}
+        {/* <div
           className={activityKey === "ranking-list" ? "activity" : ""}
           onClick={() => tabClick("ranking-list")}
         >
           {t<string>("header-a-tab-4")}
           <div className="line"></div>
-        </div>
+        </div> */}
         {/* <div
           className={activityKey === "2" ? "activity" : ""}
           onClick={() => tabClick("2")}
