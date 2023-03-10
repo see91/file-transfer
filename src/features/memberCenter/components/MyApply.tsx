@@ -132,12 +132,22 @@ export const MyApply = () => {
     //   key: 'hrac',
     // }
   ];
+
   const download = async (record) => {
-    const params: ApprovedFileContentByFileIdRequestOptions = {
-      fileId: record.file_id,
-      fileName: record.file_name,
-    };
-    await getApprovedFileContentByFileId(params);
+    // 文件解密 ~  TODO
+    // start --------------------
+    // from 
+    // to 
+    // fileId: record.file_id,
+    // fileName: record.file_name,
+    // end --------------------
+
+
+    // const params: ApprovedFileContentByFileIdRequestOptions = {
+    //   fileId: record.file_id,
+    //   fileName: record.file_name,
+    // };
+    // await getApprovedFileContentByFileId(params);
     // const blob = new Blob([result]);
     // const link = document.createElement("a");
     // link.style.display = "none"

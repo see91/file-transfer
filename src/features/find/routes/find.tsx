@@ -218,10 +218,11 @@ export const Find = () => {
   };
 
   const _uploadAction = () => {
-    if (typeof (window.chrome as any).app.isInstalled !== "undefined") {
-      const nulink = globalThis.nulink;
-      nulink.sendMessage({ type: "uploadFilesCreatePolicyByWeb" });
-    }
+    // http://localhost:3000/upload-file
+    // if (typeof (window.chrome as any).app.isInstalled !== "undefined") {
+    //   const nulink = globalThis.nulink;
+    //   nulink.sendMessage({ type: "uploadFilesCreatePolicyByWeb" });
+    // }
   };
 
   const _filterQuery = (key, value) => {

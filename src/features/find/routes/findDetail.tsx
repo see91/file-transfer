@@ -72,18 +72,31 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-    try {
-      const params: ApplyPermissionForFilesRequestOptions = {
-        fileIds: [detailItem.file_id],
-        usageDays: values.usageDays,
-      };
-      await applyPermissionForFiles(params);
-      setIsModalVisible(false); // close apply pop window
-      setVisible(true); //pop window for result tips
-      _getFileDetail()
-    } catch (e) {
-      console.log("apply file failed", e);
-    }
+    // TODO ~
+    // start --------------------
+    // 1、form 
+    // 2、to    detailItem.creator_address
+    // 3、fileIds:    [detailItem.file_id],
+    // 4、usageDays:     values.usageDays
+
+    // detailItem.file_name
+    // end --------------------
+
+
+
+
+    // try {
+    //   const params: ApplyPermissionForFilesRequestOptions = {
+    //     fileIds: [detailItem.file_id],
+    //     usageDays: values.usageDays,
+    //   };
+    //   await applyPermissionForFiles(params);
+    //   setIsModalVisible(false); // close apply pop window
+    //   setVisible(true); //pop window for result tips
+    //   _getFileDetail()
+    // } catch (e) {
+    //   console.log("apply file failed", e);
+    // }
   };
 
   const _getFileDetail = async () => {

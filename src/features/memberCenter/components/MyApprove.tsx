@@ -208,6 +208,12 @@ export const MyApprove = () => {
     setOpen(false);
   };
   const approveSubmit = async ({ selector, remark }: ModalFormOptions) => {
+    // TODO  ~
+    // start --------------------
+    // applyId
+    // remark
+    // end --------------------
+
     if (selector === 1) {
       const { applyId } = useWalletParams as UseWalletPayRequestOptions;
 
