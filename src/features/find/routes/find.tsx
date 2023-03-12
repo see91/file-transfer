@@ -46,6 +46,12 @@ export const ownedStyle = {
   background: "ghostwhite",
 };
 
+const _user = {
+  address: "0x85859b7f3b3e5955a594d0ccf50ede9058cab6e5",
+  id: "15f5b5975f21d95becd59e3585859b7f3b3e5955a594d0ccf50ede9058cab6e5",
+  name: "222222",
+};
+
 export const Find = () => {
   const pageSize = 12;
   const [pageIndex, setPageIndex] = useState(1);
@@ -53,7 +59,7 @@ export const Find = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [searchValues, setSearchValues] = useState({});
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(_user);
   const [resultList, setResultList] = useState<any>([]);
   const [total, setTotal] = useState(0);
   const [fileCategory, setFileCategory] = useState<any>([]);
@@ -94,7 +100,7 @@ export const Find = () => {
       pageIndex: 1,
       include: true,
     });
-    dealWithResultList(result);
+    dealWithResultList(result.data);
   };
 
   const deduplication = (arr) => {
@@ -148,7 +154,7 @@ export const Find = () => {
       pageIndex: val,
       include: true,
     });
-    dealWithResultList(result);
+    dealWithResultList(result.data);
   };
 
   useEffect(() => {

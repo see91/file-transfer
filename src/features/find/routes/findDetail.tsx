@@ -53,6 +53,12 @@ const btnStyleOk = {
   background: "#503A86",
   marginLeft: "20px",
 };
+
+const _user = {
+  address: "0x85859b7f3b3e5955a594d0ccf50ede9058cab6e5",
+  id: "15f5b5975f21d95becd59e3585859b7f3b3e5955a594d0ccf50ede9058cab6e5",
+  name: "222222",
+};
 export const FindDetail = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -65,7 +71,7 @@ export const FindDetail = () => {
   const [buttonShow, setButtonShow] = useState(true);
   const [visible, setVisible] = useState(false); // result tips popup window
   const [bUploader, setIsUploader] = useState(false); // user.id === detailItem.creator_id id the uploader
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(_user);
 
   /**
    * apply for file
@@ -100,12 +106,12 @@ export const FindDetail = () => {
   };
 
   const _getFileDetail = async () => {
-    const user = getUserCache();
-    setUser(user);
+    // const user = getUserCache();
+    // setUser(user);
 
-    if (!user) {
-      return;
-    }
+    // if (!user) {
+    //   return;
+    // }
 
     // get state param by find.tsx page: navigate("/findDetail", { state: fileDetail });  // pass param between pages
     let passedFile: any = {};
@@ -118,6 +124,8 @@ export const FindDetail = () => {
     } else {
       passedFile = location.state as any;
     }
+    console.log(passedFile,'=======呼呼呼');
+    
     (async (user) => {
       const params: FileDetailRequestOptions = {
         fileId: passedFile.file_id,
