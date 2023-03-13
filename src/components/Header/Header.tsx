@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultAvatarImage } from "@/utils/defaultImage";
 
-import { connectWallet } from "@/features/auth/api/connectWallet";
 import {
   getAvatarBase64String,
   getUserInfo,
@@ -16,8 +15,8 @@ import Emitter from "@/lib/emitter";
 import { USERINFO_UPDATE } from "@/lib/emitter-events";
 import { getUserDetailInfo } from "@/features/auth/api/getLoginedUserInfo";
 import Notice from "./Notice";
-
-// import type { AuthUser } from "@/features/auth";
+import {requisiteQueryData} from "@/unlinkagent/types";
+import {encodeRequestData} from "@/unlinkagent/api";
 
 export const Header = ({ setLoginUser, setLoginStatus }) => {
   const { t } = useTranslation();
@@ -34,12 +33,43 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     setActivityKey(key);
   };
   const gotoConnect = async () => {
-    const isConnect = await connectWallet();
-    if (!isConnect) {
-      return false;
+    const uuid = crypto.randomUUID();
+    await sessionStorage.setItem("uuid", uuid)
+    const queryData: requisiteQueryData = {
+      accountAddress: "", accountId: "",
+      redirectUrl: document.location.toString(),
+      sourceUrl: document.domain
     }
-    fetchUserInfo();
+    const linkedAccountAddress = sessionStorage.getItem("accountAddress");
+    const linkedAccountId = sessionStorage.getItem("accountId");
+    if (linkedAccountAddress && linkedAccountId){
+      queryData.accountAddress = linkedAccountAddress
+      queryData.accountId = linkedAccountId
+      const publicKey = await sessionStorage.getItem("publicKey")
+      if (publicKey) {
+        const paramData = encodeRequestData(queryData, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open("http://localhost:3000/guide?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      }
+    } else {
+      window.open("http://localhost:3000/guide?data=login&key=login&sourceUrl=www.127.0.0.1:8090&redirectUrl=" + document.location.toString())
+    }
+    window.addEventListener("message", loginSuccessHandler)
   };
+
+  const loginSuccessHandler = async (e) => {
+      const date = JSON.parse(e.data)
+      const redirectUrl = date.redirectUrl
+      if (date && redirectUrl /*&& redirectUrl == document.location.toString()*/) {
+        if (date.action == 'login' && date.result == 'success') {
+          await sessionStorage.setItem("accountAddress", date.accountAddress)
+          await sessionStorage.setItem("accountId", date.accountId)
+          await sessionStorage.setItem("publicKey", date.publicKey)
+          window.removeEventListener("message", loginSuccessHandler)
+          alert(" login success")
+        }
+      }
+  }
 
   const fetchUserInfo = async () => {
     // console.log("fetchUserInfo -------------");

@@ -39,6 +39,8 @@ import {
   ApplyStatusOfBeingApprovedOrApprovedRequestOptions,
   IsApplyStatusOfBeingApprovedOrApproved,
 } from "@/features/auth/api/applyStatusOfBeingApprovedOrApproved";
+import { approveRequestData} from "@/unlinkagent/types";
+import {encodeRequestData} from "@/unlinkagent/api";
 dayjs.extend(utc);
 
 const { TextArea } = Input;
@@ -207,57 +209,53 @@ export const MyApprove = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const approveSubmit = async ({ selector, remark }: ModalFormOptions) => {
-    // TODO  ~
-    // start --------------------
-    // applyId
-    // remark
-    // end --------------------
+  const approveSubmit = async () => {
 
-    if (selector === 1) {
-      const { applyId } = useWalletParams as UseWalletPayRequestOptions;
+    const { applyId } = useWalletParams as UseWalletPayRequestOptions;
 
-      const applyStatusOfBeingApprovedOrApprovedRequestOptions: ApplyStatusOfBeingApprovedOrApprovedRequestOptions =
-        Object.assign({}, { applyId: applyId });
-      const bApplyStatusOfBeingApprovedOrApproved: boolean =
-        await IsApplyStatusOfBeingApprovedOrApproved(
-          applyStatusOfBeingApprovedOrApprovedRequestOptions,
-        );
-      if (!!bApplyStatusOfBeingApprovedOrApproved) {
-        //The policy has been approved. You do not need to apply for it again
-        //TODO: show alert error msg
-        setOpen(true);
-        setSeverity("error");
-        setAlertMessage(t("policy-is-currently-active"));
-        return;
+    const perAccountAddress = sessionStorage.getItem("accountAddress");
+    const perAccountId = sessionStorage.getItem("accountId");
+    if (perAccountAddress && perAccountId){
+      const approveParam: approveRequestData = {
+        accountAddress:  perAccountAddress,
+        accountId: perAccountId,
+        redirectUrl: document.location.toString(),
+        sourceUrl: document.domain,
+        from: perAccountAddress,
+        to: '', //TODO
+        applyId: applyId
       }
 
-      const resolveParams: UseWalletPayRequestOptions = Object.assign(
-        {},
-        useWalletParams,
-        { remark: remark ?? "" },
-      );
-      console.log("useWalletParams", resolveParams);
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const result = await useWalletPay(resolveParams);
-
-      if (result) {
-        // Popup a window
-        setIsAuditModalVisible(false);
-        // setVisible(true);
+      const uuid = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("publicKey")
+      if (uuid && publicKey){
+        const paramData = encodeRequestData(approveParam, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open("http://localhost:3000/approve + data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.addEventListener("message", approveSuccessHandler)
       }
-    } else if (selector === 2) {
-      // reject
-      const { applyId } = useWalletParams as UseWalletPayRequestOptions;
-      const rejectParams: RefuseApplicationOfUseFilesRequestOptions = {
-        applyId,
-        remark,
-      };
-      await refuseApplicationOfUseFiles(rejectParams);
-      setIsAuditModalVisible(false);
-      setVisible(true);
+    } else {
+      //TODO turn to unlink agent login page
+      return
     }
+
   };
+
+  const approveSuccessHandler = async (e) => {
+    const responseData = JSON.parse(e.data)
+    const redirectUrl = responseData.redirectUrl
+    if (responseData && redirectUrl) {
+      if (responseData.action == 'approve') {
+        window.removeEventListener("message", approveSuccessHandler)
+        alert("Approve Success!")
+      }
+      if (responseData.subAction && responseData.subAction == 'relogin') {
+        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
+        await sessionStorage.setItem('accountId', responseData.accountId)
+        await sessionStorage.setItem('publicKey', responseData.publicKey)
+      }
+    }
+  }
   /**
    * select action
    */
@@ -407,7 +405,7 @@ export const MyApprove = () => {
           labelCol={{ span: 4, offset: 0 }}
           wrapperCol={{ span: 18 }}
           onFinish={async (values: ModalFormOptions) => {
-            await approveSubmit(values);
+            await approveSubmit();
           }}
         >
           <Form.Item

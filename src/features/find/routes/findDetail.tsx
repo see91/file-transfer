@@ -37,6 +37,8 @@ import {
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
 import { resolveModuleNameFromCache } from "typescript";
+import {applyRequestData} from "@/unlinkagent/types";
+import {encodeRequestData} from "@/unlinkagent/api";
 const { Option } = Select;
 
 const btnStyle = {
@@ -78,32 +80,46 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-    // TODO ~
-    // start --------------------
-    // 1、form 
-    // 2、to    detailItem.creator_address
-    // 3、fileIds:    [detailItem.file_id],
-    // 4、usageDays:     values.usageDays
 
-    // detailItem.file_name
-    // end --------------------
+    const perAccountAddress = sessionStorage.getItem("accountAddress");
+    const perAccountId = sessionStorage.getItem("accountId");
+    if (perAccountAddress && perAccountId) {
+      const applyParam: applyRequestData = {
+        accountAddress: perAccountAddress,
+        accountId: perAccountId,
+        redirectUrl: document.location.toString(),
+        sourceUrl: document.domain,
+        fileName: detailItem.file_name,
+        fileId: detailItem.file_id,
+        owner: detailItem.creator_address
+      }
 
-
-
-
-    // try {
-    //   const params: ApplyPermissionForFilesRequestOptions = {
-    //     fileIds: [detailItem.file_id],
-    //     usageDays: values.usageDays,
-    //   };
-    //   await applyPermissionForFiles(params);
-    //   setIsModalVisible(false); // close apply pop window
-    //   setVisible(true); //pop window for result tips
-    //   _getFileDetail()
-    // } catch (e) {
-    //   console.log("apply file failed", e);
-    // }
+      const uuid = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("uuid")
+      if (uuid && publicKey) {
+        const paramData = encodeRequestData(applyParam, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open("http://localhost:3000/apply + data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      }
+      window.addEventListener("message", applySuccessHandler)
+    }
   };
+
+    const applySuccessHandler = async (e) => {
+      const responseData = JSON.parse(e.data)
+      const redirectUrl = responseData.redirectUrl
+      if (responseData && redirectUrl && redirectUrl == document.location.toString()) {
+        if (responseData.action == 'apply' && responseData.result == 'success') {
+          window.removeEventListener("message", applySuccessHandler)
+          alert("apply success")
+        }
+        if (responseData.subAction && responseData.subAction == 'relogin') {
+          await sessionStorage.setItem('accountAddress', responseData.accountAddress)
+          await sessionStorage.setItem('accountId', responseData.accountId)
+          await sessionStorage.setItem('publicKey', responseData.publicKey)
+        }
+      }
+    }
 
   const _getFileDetail = async () => {
     // const user = getUserCache();
@@ -125,7 +141,7 @@ export const FindDetail = () => {
       passedFile = location.state as any;
     }
     console.log(passedFile,'=======呼呼呼');
-    
+
     (async (user) => {
       const params: FileDetailRequestOptions = {
         fileId: passedFile.file_id,
@@ -145,10 +161,10 @@ export const FindDetail = () => {
       }
 
       setDetailItem(
-        Object.assign({}, result, {
-          owner: result.creator || passedFile.owner,
-          src: passedFile.src,
-        }),
+          Object.assign({}, result, {
+            owner: result.creator || passedFile.owner,
+            src: passedFile.src,
+          }),
       );
 
       const isUploader = result.creator_id === user.id;
@@ -240,43 +256,43 @@ export const FindDetail = () => {
       case 1:
         // pending review
         return (
-          <div className="find_detail_apply_status">
-            <ClockCircleFilled
-              name="dateTime"
-              style={{ color: "#68BB8D", marginRight: "10px" }}
-            />
-            {t<string>("find-detail-a-status-1")}
-          </div>
+            <div className="find_detail_apply_status">
+              <ClockCircleFilled
+                  name="dateTime"
+                  style={{ color: "#68BB8D", marginRight: "10px" }}
+              />
+              {t<string>("find-detail-a-status-1")}
+            </div>
         );
       case 2:
         // application passed
         return (
-          <div className="find_detail_apply_status">
-            <CheckCircleFilled
-              style={{ color: "#68BB8D", marginRight: "10px" }}
-            />
-            {t<string>("find-detail-a-status-2")}
-          </div>
+            <div className="find_detail_apply_status">
+              <CheckCircleFilled
+                  style={{ color: "#68BB8D", marginRight: "10px" }}
+              />
+              {t<string>("find-detail-a-status-2")}
+            </div>
         );
       case 3:
         // application rejected
         return (
-          <div className="find_detail_apply_status_error">
-            <CloseCircleFilled
-              style={{ color: "#FF3838", marginRight: "10px" }}
-            />
-            {t<string>("find-detail-a-status-3")}
-          </div>
+            <div className="find_detail_apply_status_error">
+              <CloseCircleFilled
+                  style={{ color: "#FF3838", marginRight: "10px" }}
+              />
+              {t<string>("find-detail-a-status-3")}
+            </div>
         );
       case 4:
         // application expired, out of date
         return (
-          <div className="find_detail_apply_status_disabled">
-            <ExclamationCircleFilled
-              style={{ color: "#939CB0", marginRight: "10px" }}
-            />
-            {t<string>("find-detail-a-status-4")}
-          </div>
+            <div className="find_detail_apply_status_disabled">
+              <ExclamationCircleFilled
+                  style={{ color: "#939CB0", marginRight: "10px" }}
+              />
+              {t<string>("find-detail-a-status-4")}
+            </div>
         );
     }
   };
@@ -293,10 +309,10 @@ export const FindDetail = () => {
       case 2:
         // application passed
         return (
-          <OvalButton
-            title={t<string>("find-detail-a-btn-1")}
-            onClick={() => fileDownload()}
-          />
+            <OvalButton
+                title={t<string>("find-detail-a-btn-1")}
+                onClick={() => fileDownload()}
+            />
         );
       case 3:
       case 4:
@@ -306,10 +322,10 @@ export const FindDetail = () => {
          * application expired, out of date
          */
         return (
-          <OvalButton
-            title={t<string>("find-detail-a-btn-2")}
-            onClick={() => applyDownload()}
-          />
+            <OvalButton
+                title={t<string>("find-detail-a-btn-2")}
+                onClick={() => applyDownload()}
+            />
         );
     }
   };
@@ -323,28 +339,28 @@ export const FindDetail = () => {
   console.log(detailItem, "fd");
 
   return (
-    <div className="find_detail marb-30">
-      <Row className="find_detail_top">
-        <Col span="12">
-          <div className="find_detail_top_left">
-            {!detailItem.thumbnail ? (
-              <div className="file_img_area">
-                <img
-                  style={fileImgAreaStyle}
-                  src={detailItem.src || defaultImage}
-                  alt=""
-                />
-              </div>
-            ) : (
-              <img src={detailItem.src} alt="" onError={defaultImageHandler} />
-            )}
-          </div>
-        </Col>
-        <Col span="12">
-          <div className="find_detail_top_right">
-            <div className="find_detail_top_right_title flex_row">
-              <div>{detailItem.file_name}</div>
-              {/* <div>
+      <div className="find_detail marb-30">
+        <Row className="find_detail_top">
+          <Col span="12">
+            <div className="find_detail_top_left">
+              {!detailItem.thumbnail ? (
+                  <div className="file_img_area">
+                    <img
+                        style={fileImgAreaStyle}
+                        src={detailItem.src || defaultImage}
+                        alt=""
+                    />
+                  </div>
+              ) : (
+                  <img src={detailItem.src} alt="" onError={defaultImageHandler} />
+              )}
+            </div>
+          </Col>
+          <Col span="12">
+            <div className="find_detail_top_right">
+              <div className="find_detail_top_right_title flex_row">
+                <div>{detailItem.file_name}</div>
+                {/* <div>
                 <UploadOutlined
                   style={{
                     fontSize: "16px",
@@ -354,41 +370,41 @@ export const FindDetail = () => {
                 />
                 0
               </div> */}
-            </div>
-            <div className="find_detail_top_right_content">
-              <div
-                className="flex_row top_right_content_item mtb_30 pointer"
-                onClick={() => {
-                  navigate(`/creator/${detailItem.creator_id}`);
-                }}
-              >
-                <img
-                  src={detailItem.creator_avatar || defaultAvatarImage}
-                  alt=""
-                />
-                <div>
-                  <div>{t<string>("find-detail-a-info-label-1")}</div>
-                  {/* <div>{t<string>("find-detail-account-address")}</div> */}
-                  <div>{detailItem.owner}</div>
-                </div>
               </div>
-              <div className="flex_row top_right_content_item">
-                <div className="left_color">
-                  {t<string>("find-detail-ipfs-file-address")}：
+              <div className="find_detail_top_right_content">
+                <div
+                    className="flex_row top_right_content_item mtb_30 pointer"
+                    onClick={() => {
+                      navigate(`/creator/${detailItem.creator_id}`);
+                    }}
+                >
+                  <img
+                      src={detailItem.creator_avatar || defaultAvatarImage}
+                      alt=""
+                  />
+                  <div>
+                    <div>{t<string>("find-detail-a-info-label-1")}</div>
+                    {/* <div>{t<string>("find-detail-account-address")}</div> */}
+                    <div>{detailItem.owner}</div>
+                  </div>
                 </div>
-                <div className="right_color">
-                  {detailItem.file_ipfs_address}
+                <div className="flex_row top_right_content_item">
+                  <div className="left_color">
+                    {t<string>("find-detail-ipfs-file-address")}：
+                  </div>
+                  <div className="right_color">
+                    {detailItem.file_ipfs_address}
+                  </div>
                 </div>
-              </div>
-              <div className="flex_row top_right_content_item">
-                <div className="left_color">
-                  {t<string>("find-detail-a-info-label-2")}：
+                <div className="flex_row top_right_content_item">
+                  <div className="left_color">
+                    {t<string>("find-detail-a-info-label-2")}：
+                  </div>
+                  <div className="right_color">
+                    {formatDate(detailItem.file_created_at * 1000)}
+                  </div>
                 </div>
-                <div className="right_color">
-                  {formatDate(detailItem.file_created_at * 1000)}
-                </div>
-              </div>
-              {/* <div className="flex_row top_right_content_item">
+                {/* <div className="flex_row top_right_content_item">
                 <div className="left_color">Token ID：</div>
                 <div className="right_color">9518</div>
               </div>
@@ -396,152 +412,152 @@ export const FindDetail = () => {
                 <div className="left_color">Blockchain：</div>
                 <div className="right_color">Abey Chain</div>
               </div> */}
-            </div>
-            {(applyStatus === null || !buttonShow) && (
-              <div className="mart-30"></div>
-            )}
+              </div>
+              {(applyStatus === null || !buttonShow) && (
+                  <div className="mart-30"></div>
+              )}
 
-            {bUploader && (
-              <div className="find_detail_apply_box">
-                <div
-                  className="find_detail_apply_btn"
-                  onClick={() => fileDownload()}
-                >
-                  {t<string>("find-detail-a-btn-1")}
-                </div>
-              </div>
-            )}
-            {!bUploader && applyStatus === 0 && buttonShow && (
-              <div
-                className="find_detail_top_right_btn"
-                onClick={applyDownload}
-              >
-                {t<string>("find-detail-a-btn")}
-              </div>
-            )}
-            {!bUploader && [1, 2, 3, 4].includes(applyStatus as number) && (
-              <div className="find_detail_apply_box">
-                <div className="find_detail_apply_info">
-                  <div className="find_detail_apply_info_left">
-                    <div>
-                      {t<string>("find-detail-a-info-label-4")}:{" "}
-                      {formatDate(detailItem.apply_created_at * 1000)}
+              {bUploader && (
+                  <div className="find_detail_apply_box">
+                    <div
+                        className="find_detail_apply_btn"
+                        onClick={() => fileDownload()}
+                    >
+                      {t<string>("find-detail-a-btn-1")}
                     </div>
-                    <div>
-                      {t<string>("find-detail-a-info-label-5")}:{" "}
-                      {detailItem?.apply_days || "~"}
-                    </div>
-                    {applyStatus === 2 && (
-                      <>
-                        <div>
-                          {t<string>("find-detail-owning-strategy")}:{" "}
-                          {detailItem.policy_id}
-                        </div>
-                        <div>
-                          {t<string>("find-detail-strategy-owner")}:{" "}
-                          {detailItem.creator_address}
-                        </div>
-                      </>
-                    )}
                   </div>
-                  {IconCom()}
-                </div>
-                {ButtonCom()}
-              </div>
-            )}
-          </div>
-        </Col>
-      </Row>
-      {/* <div className="find_detail_bottom">
+              )}
+              {!bUploader && applyStatus === 0 && buttonShow && (
+                  <div
+                      className="find_detail_top_right_btn"
+                      onClick={applyDownload}
+                  >
+                    {t<string>("find-detail-a-btn")}
+                  </div>
+              )}
+              {!bUploader && [1, 2, 3, 4].includes(applyStatus as number) && (
+                  <div className="find_detail_apply_box">
+                    <div className="find_detail_apply_info">
+                      <div className="find_detail_apply_info_left">
+                        <div>
+                          {t<string>("find-detail-a-info-label-4")}:{" "}
+                          {formatDate(detailItem.apply_created_at * 1000)}
+                        </div>
+                        <div>
+                          {t<string>("find-detail-a-info-label-5")}:{" "}
+                          {detailItem?.apply_days || "~"}
+                        </div>
+                        {applyStatus === 2 && (
+                            <>
+                              <div>
+                                {t<string>("find-detail-owning-strategy")}:{" "}
+                                {detailItem.policy_id}
+                              </div>
+                              <div>
+                                {t<string>("find-detail-strategy-owner")}:{" "}
+                                {detailItem.creator_address}
+                              </div>
+                            </>
+                        )}
+                      </div>
+                      {IconCom()}
+                    </div>
+                    {ButtonCom()}
+                  </div>
+              )}
+            </div>
+          </Col>
+        </Row>
+        {/* <div className="find_detail_bottom">
         <div className="find_detail_bottom_title">{t<string>("find-detail-a-table-title")}</div>
         <Table columns={columns} dataSource={approvedFileList} pagination={false} />
       </div> */}
-      <Modal
-        title={t<string>("find-detail-a-btn")}
-        width="640px"
-        destroyOnClose
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        centered
-        footer={null}
-        maskClosable={false}
-        className="modal_class"
-      >
-        <Form
-          preserve={false}
-          form={form}
-          initialValues={{
-            usageDays: 1,
-          }}
-          onFinish={async (values: FileApplyOptions) => {
-            await applyForFile(values);
-            // onSuccess();
-          }}
+        <Modal
+            title={t<string>("find-detail-a-btn")}
+            width="640px"
+            destroyOnClose
+            visible={isModalVisible}
+            onCancel={handleCancel}
+            centered
+            footer={null}
+            maskClosable={false}
+            className="modal_class"
         >
-          <div className="flex_row mar_0">
-            <Form.Item
-              label={t<string>("find-detail-a-modal-lable")}
-              // colon={false}
-              name="usageDays"
-            >
-              <Select
-                defaultValue="1"
-                style={{ width: 120 }}
-                options={[
-                  {
-                    value: "1",
-                    label: "1",
-                  },
-                  {
-                    value: "2",
-                    label: "2",
-                  },
-                  {
-                    value: "3",
-                    label: "3",
-                  },
-                  {
-                    value: "4",
-                    label: "4",
-                  },
-                  {
-                    value: "5",
-                    label: "5",
-                  },
-                  {
-                    value: "6",
-                    label: "6",
-                  },
-                  {
-                    value: "7",
-                    label: "7",
-                  },
-                ]}
-              />
-              {/* <Input /> */}
-              {/* <span className="ml_20">{t<string>("find-detail-a-modal-day")}</span> */}
-            </Form.Item>
-            <div className="ml_20">{t<string>("find-detail-a-modal-day")}</div>
-          </div>
+          <Form
+              preserve={false}
+              form={form}
+              initialValues={{
+                usageDays: 1,
+              }}
+              onFinish={async (values: FileApplyOptions) => {
+                await applyForFile(values);
+                // onSuccess();
+              }}
+          >
+            <div className="flex_row mar_0">
+              <Form.Item
+                  label={t<string>("find-detail-a-modal-lable")}
+                  // colon={false}
+                  name="usageDays"
+              >
+                <Select
+                    defaultValue="1"
+                    style={{ width: 120 }}
+                    options={[
+                      {
+                        value: "1",
+                        label: "1",
+                      },
+                      {
+                        value: "2",
+                        label: "2",
+                      },
+                      {
+                        value: "3",
+                        label: "3",
+                      },
+                      {
+                        value: "4",
+                        label: "4",
+                      },
+                      {
+                        value: "5",
+                        label: "5",
+                      },
+                      {
+                        value: "6",
+                        label: "6",
+                      },
+                      {
+                        value: "7",
+                        label: "7",
+                      },
+                    ]}
+                />
+                {/* <Input /> */}
+                {/* <span className="ml_20">{t<string>("find-detail-a-modal-day")}</span> */}
+              </Form.Item>
+              <div className="ml_20">{t<string>("find-detail-a-modal-day")}</div>
+            </div>
 
-          <div className="modal_btn">
-            <Button style={btnStyle} onClick={handleCancel}>
-              {t<string>("find-detail-a-modal-btn-no")}
-            </Button>
-            <Button
-              style={Object.assign({}, btnStyle, btnStyleOk)}
-              htmlType="submit"
-            >
-              {t<string>("find-detail-a-modal-btn-ok")}
-            </Button>
-          </div>
-        </Form>
-      </Modal>
-      <UsePopup
-        visible={visible}
-        onChange={setVisible}
-        content="Operate success!"
-      />
-    </div>
+            <div className="modal_btn">
+              <Button style={btnStyle} onClick={handleCancel}>
+                {t<string>("find-detail-a-modal-btn-no")}
+              </Button>
+              <Button
+                  style={Object.assign({}, btnStyle, btnStyleOk)}
+                  htmlType="submit"
+              >
+                {t<string>("find-detail-a-modal-btn-ok")}
+              </Button>
+            </div>
+          </Form>
+        </Modal>
+        <UsePopup
+            visible={visible}
+            onChange={setVisible}
+            content="Operate success!"
+        />
+      </div>
   );
 };

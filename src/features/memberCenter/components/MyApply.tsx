@@ -14,6 +14,8 @@ import {
 } from "../api/apply";
 import { locale } from "@/config";
 import OvalButton from "@/components/Button/OvalButton";
+import {decryptionRequestData} from "@/unlinkagent/types";
+import {encodeRequestData} from "@/unlinkagent/api";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -134,30 +136,48 @@ export const MyApply = () => {
   ];
 
   const download = async (record) => {
-    // 文件解密 ~  TODO
-    // start --------------------
-    // from 
-    // to 
-    // fileId: record.file_id,
-    // fileName: record.file_name,
-    // end --------------------
 
+    const perAccountAddress = sessionStorage.getItem("accountAddress");
+    const perAccountId = sessionStorage.getItem("accountId");
 
-    // const params: ApprovedFileContentByFileIdRequestOptions = {
-    //   fileId: record.file_id,
-    //   fileName: record.file_name,
-    // };
-    // await getApprovedFileContentByFileId(params);
-    // const blob = new Blob([result]);
-    // const link = document.createElement("a");
-    // link.style.display = "none"
-    // const href = window.URL.createObjectURL(blob);
-    // link.href = href;
-    // link.download = record.file_name;
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+    if (perAccountAddress && perAccountId){
+      const decryptionRequestData: decryptionRequestData = {
+        accountAddress: perAccountAddress,
+        accountId: perAccountId,
+        redirectUrl: document.location.toString(),
+        sourceUrl: document.domain,
+        fileId: record.file_id,
+        fileName: record.file_name,
+        owner: '', //TODO record
+        user: '' //TODO
+      }
+
+      const uuid = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("uuid")
+      if (uuid && publicKey){
+        const paramData = encodeRequestData(decryptionRequestData, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open("http://localhost:3000/request-authorization + data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      }
+      window.addEventListener("message", authorizationSuccessHandler)
+    }
   };
+
+  const authorizationSuccessHandler = async (e) => {
+    const responseData = JSON.parse(e.data)
+    const redirectUrl = responseData.redirectUrl
+    if (responseData && redirectUrl ) {
+      if (responseData.action == 'approve' && responseData.result == 'success') {
+        window.removeEventListener("message", authorizationSuccessHandler)
+        alert("authorization success")
+      }
+      if (responseData.subAction && responseData.subAction == 'relogin') {
+        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
+        await sessionStorage.setItem('accountId', responseData.accountId)
+        await sessionStorage.setItem('publicKey', responseData.publicKey)
+      }
+    }
+  }
 
   const statusSelectHandler = async (value) => {
     setStatus(value);

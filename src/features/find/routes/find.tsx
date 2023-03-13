@@ -16,6 +16,8 @@ import OvalButton from "@/components/Button/OvalButton";
 import CloseButton from "@/components/Button/CloseButton";
 import { Pagination } from "@mui/material";
 import DataIndicators from "../components/DataIndicators";
+import {applyRequestData, requisiteQueryData} from "@/unlinkagent/types";
+import {encodeRequestData} from "@/unlinkagent/api";
 
 const { Option } = Select;
 const formItemStyle = {
@@ -223,13 +225,42 @@ export const Find = () => {
     setDescOrder(e);
   };
 
-  const _uploadAction = () => {
-    // http://localhost:3000/upload-file
-    // if (typeof (window.chrome as any).app.isInstalled !== "undefined") {
-    //   const nulink = globalThis.nulink;
-    //   nulink.sendMessage({ type: "uploadFilesCreatePolicyByWeb" });
-    // }
+  const _uploadAction = async () => {
+    const perAccountAddress = sessionStorage.getItem("accountAddress");
+    const perAccountId = sessionStorage.getItem("accountId");
+    if (perAccountAddress && perAccountId) {
+      const queryData: requisiteQueryData = {
+        accountAddress: perAccountAddress,
+        accountId: perAccountId,
+        redirectUrl: document.location.toString(),
+        sourceUrl: document.domain
+      }
+
+      const uuid = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("uuid")
+      if (uuid && publicKey) {
+        const paramData = encodeRequestData(queryData, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open(encodeURIComponent("http://localhost:3000/upload-file + data=" + paramData + "&key=" + key))
+      }
+      window.addEventListener("message", uploadSuccessHandler)
+    }
   };
+
+  const uploadSuccessHandler = async (e) => {
+    const responseData = JSON.parse(e.data)
+    const redirectUrl = responseData.redirectUrl
+    if (responseData && redirectUrl) {
+      if (responseData.action == 'upload' && responseData.result == 'success') {
+        alert(" upload success")
+      }
+      if (responseData.subAction && responseData.subAction == 'relogin') {
+        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
+        await sessionStorage.setItem('accountId', responseData.accountId)
+        await sessionStorage.setItem('publicKey', responseData.publicKey)
+      }
+    }
+  }
 
   const _filterQuery = (key, value) => {
     const keyObj = {
