@@ -24,14 +24,18 @@ export const MainLayout = ({ children }: ProviderProps) => {
       <Layout style={layoutStyle}>
         <BrowserRouter>
           <Header setLoginUser={setUser} setLoginStatus={setLoginStatus} />
-          {!!user ? (
+          <div>
+            <MyRoutes />
+            <Outlet />
+          </div>
+          {/* {!!user ? (
             <div>
               <MyRoutes />
               <Outlet />
             </div>
           ) : (
             <Login loginStatus={loginStatus} />
-          )}
+          )} */}
 
           <Footer />
         </BrowserRouter>

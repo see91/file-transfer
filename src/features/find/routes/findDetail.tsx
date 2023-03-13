@@ -124,7 +124,6 @@ export const FindDetail = () => {
     } else {
       passedFile = location.state as any;
     }
-    console.log(passedFile,'=======呼呼呼');
     
     (async (user) => {
       const params: FileDetailRequestOptions = {
