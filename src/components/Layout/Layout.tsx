@@ -28,6 +28,15 @@ export const MainLayout = ({ children }: ProviderProps) => {
             <MyRoutes />
             <Outlet />
           </div>
+          {/* {!!user ? (
+            <div>
+              <MyRoutes />
+              <Outlet />
+            </div>
+          ) : (
+            <Login loginStatus={loginStatus} />
+          )} */}
+
           <Footer />
         </BrowserRouter>
       </Layout>

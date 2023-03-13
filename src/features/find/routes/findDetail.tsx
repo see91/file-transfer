@@ -140,7 +140,6 @@ export const FindDetail = () => {
     } else {
       passedFile = location.state as any;
     }
-    console.log(passedFile,'=======呼呼呼');
 
     (async (user) => {
       const params: FileDetailRequestOptions = {
@@ -412,152 +411,152 @@ export const FindDetail = () => {
                 <div className="left_color">Blockchain：</div>
                 <div className="right_color">Abey Chain</div>
               </div> */}
-              </div>
-              {(applyStatus === null || !buttonShow) && (
-                  <div className="mart-30"></div>
-              )}
-
-              {bUploader && (
-                  <div className="find_detail_apply_box">
-                    <div
-                        className="find_detail_apply_btn"
-                        onClick={() => fileDownload()}
-                    >
-                      {t<string>("find-detail-a-btn-1")}
-                    </div>
-                  </div>
-              )}
-              {!bUploader && applyStatus === 0 && buttonShow && (
-                  <div
-                      className="find_detail_top_right_btn"
-                      onClick={applyDownload}
-                  >
-                    {t<string>("find-detail-a-btn")}
-                  </div>
-              )}
-              {!bUploader && [1, 2, 3, 4].includes(applyStatus as number) && (
-                  <div className="find_detail_apply_box">
-                    <div className="find_detail_apply_info">
-                      <div className="find_detail_apply_info_left">
-                        <div>
-                          {t<string>("find-detail-a-info-label-4")}:{" "}
-                          {formatDate(detailItem.apply_created_at * 1000)}
-                        </div>
-                        <div>
-                          {t<string>("find-detail-a-info-label-5")}:{" "}
-                          {detailItem?.apply_days || "~"}
-                        </div>
-                        {applyStatus === 2 && (
-                            <>
-                              <div>
-                                {t<string>("find-detail-owning-strategy")}:{" "}
-                                {detailItem.policy_id}
-                              </div>
-                              <div>
-                                {t<string>("find-detail-strategy-owner")}:{" "}
-                                {detailItem.creator_address}
-                              </div>
-                            </>
-                        )}
-                      </div>
-                      {IconCom()}
-                    </div>
-                    {ButtonCom()}
-                  </div>
-              )}
             </div>
-          </Col>
-        </Row>
-        {/* <div className="find_detail_bottom">
+            {(applyStatus === null || !buttonShow) && (
+              <div className="mart-30"></div>
+            )}
+
+            {bUploader && (
+              <div className="find_detail_apply_box">
+                <div
+                  className="find_detail_apply_btn"
+                  onClick={() => fileDownload()}
+                >
+                  {t<string>("find-detail-a-btn-1")}
+                </div>
+              </div>
+            )}
+            {!bUploader && applyStatus === 0 && buttonShow && (
+              <div
+                className="find_detail_top_right_btn"
+                onClick={applyDownload}
+              >
+                {t<string>("find-detail-a-btn")}
+              </div>
+            )}
+            {!bUploader && [1, 2, 3, 4].includes(applyStatus as number) && (
+              <div className="find_detail_apply_box">
+                <div className="find_detail_apply_info">
+                  <div className="find_detail_apply_info_left">
+                    <div>
+                      {t<string>("find-detail-a-info-label-4")}:{" "}
+                      {formatDate(detailItem.apply_created_at * 1000)}
+                    </div>
+                    <div>
+                      {t<string>("find-detail-a-info-label-5")}:{" "}
+                      {detailItem?.apply_days || "~"}
+                    </div>
+                    {applyStatus === 2 && (
+                      <>
+                        <div>
+                          {t<string>("find-detail-owning-strategy")}:{" "}
+                          {detailItem.policy_id}
+                        </div>
+                        <div>
+                          {t<string>("find-detail-strategy-owner")}:{" "}
+                          {detailItem.creator_address}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {IconCom()}
+                </div>
+                {ButtonCom()}
+              </div>
+            )}
+          </div>
+        </Col>
+      </Row>
+      {/* <div className="find_detail_bottom">
         <div className="find_detail_bottom_title">{t<string>("find-detail-a-table-title")}</div>
         <Table columns={columns} dataSource={approvedFileList} pagination={false} />
       </div> */}
-        <Modal
-            title={t<string>("find-detail-a-btn")}
-            width="640px"
-            destroyOnClose
-            visible={isModalVisible}
-            onCancel={handleCancel}
-            centered
-            footer={null}
-            maskClosable={false}
-            className="modal_class"
+      <Modal
+        title={t<string>("find-detail-a-btn")}
+        width="640px"
+        destroyOnClose
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        centered
+        footer={null}
+        maskClosable={false}
+        className="modal_class"
+      >
+        <Form
+          preserve={false}
+          form={form}
+          initialValues={{
+            usageDays: 1,
+          }}
+          onFinish={async (values: FileApplyOptions) => {
+            await applyForFile(values);
+            // onSuccess();
+          }}
         >
-          <Form
-              preserve={false}
-              form={form}
-              initialValues={{
-                usageDays: 1,
-              }}
-              onFinish={async (values: FileApplyOptions) => {
-                await applyForFile(values);
-                // onSuccess();
-              }}
-          >
-            <div className="flex_row mar_0">
-              <Form.Item
-                  label={t<string>("find-detail-a-modal-lable")}
-                  // colon={false}
-                  name="usageDays"
-              >
-                <Select
-                    defaultValue="1"
-                    style={{ width: 120 }}
-                    options={[
-                      {
-                        value: "1",
-                        label: "1",
-                      },
-                      {
-                        value: "2",
-                        label: "2",
-                      },
-                      {
-                        value: "3",
-                        label: "3",
-                      },
-                      {
-                        value: "4",
-                        label: "4",
-                      },
-                      {
-                        value: "5",
-                        label: "5",
-                      },
-                      {
-                        value: "6",
-                        label: "6",
-                      },
-                      {
-                        value: "7",
-                        label: "7",
-                      },
-                    ]}
-                />
-                {/* <Input /> */}
-                {/* <span className="ml_20">{t<string>("find-detail-a-modal-day")}</span> */}
-              </Form.Item>
-              <div className="ml_20">{t<string>("find-detail-a-modal-day")}</div>
-            </div>
+          <div className="flex_row mar_0">
+            <Form.Item
+              label={t<string>("find-detail-a-modal-lable")}
+              // colon={false}
+              name="usageDays"
+            >
+              <Select
+                defaultValue="1"
+                style={{ width: 120 }}
+                options={[
+                  {
+                    value: "1",
+                    label: "1",
+                  },
+                  {
+                    value: "2",
+                    label: "2",
+                  },
+                  {
+                    value: "3",
+                    label: "3",
+                  },
+                  {
+                    value: "4",
+                    label: "4",
+                  },
+                  {
+                    value: "5",
+                    label: "5",
+                  },
+                  {
+                    value: "6",
+                    label: "6",
+                  },
+                  {
+                    value: "7",
+                    label: "7",
+                  },
+                ]}
+              />
+              {/* <Input /> */}
+              {/* <span className="ml_20">{t<string>("find-detail-a-modal-day")}</span> */}
+            </Form.Item>
+            <div className="ml_20">{t<string>("find-detail-a-modal-day")}</div>
+          </div>
 
-            <div className="modal_btn">
-              <Button style={btnStyle} onClick={handleCancel}>
-                {t<string>("find-detail-a-modal-btn-no")}
-              </Button>
-              <Button
-                  style={Object.assign({}, btnStyle, btnStyleOk)}
-                  htmlType="submit"
-              >
-                {t<string>("find-detail-a-modal-btn-ok")}
-              </Button>
-            </div>
-          </Form>
-        </Modal>
-        <UsePopup
-            visible={visible}
-            onChange={setVisible}
-            content="Operate success!"
-        />
-      </div>
+          <div className="modal_btn">
+            <Button style={btnStyle} onClick={handleCancel}>
+              {t<string>("find-detail-a-modal-btn-no")}
+            </Button>
+            <Button
+              style={Object.assign({}, btnStyle, btnStyleOk)}
+              htmlType="submit"
+            >
+              {t<string>("find-detail-a-modal-btn-ok")}
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+      <UsePopup
+        visible={visible}
+        onChange={setVisible}
+        content="Operate success!"
+      />
+    </div>
   );
 };
