@@ -95,11 +95,11 @@ export const FindDetail = () => {
       }
 
       const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("publicKey")
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/apply + data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://localhost:3000/apply?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
       window.addEventListener("message", applySuccessHandler)
     }

@@ -228,7 +228,6 @@ export const Find = () => {
   const _uploadAction = async () => {
     const perAccountAddress = sessionStorage.getItem("accountAddress");
     const perAccountId = sessionStorage.getItem("accountId");
-    if (perAccountAddress && perAccountId) {
       const queryData: requisiteQueryData = {
         accountAddress: perAccountAddress,
         accountId: perAccountId,
@@ -237,14 +236,15 @@ export const Find = () => {
       }
 
       const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("uuid")
+      const publicKey = await sessionStorage.getItem("publicKey")
       if (uuid && publicKey) {
         const paramData = encodeRequestData(queryData, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open(encodeURIComponent("http://localhost:3000/upload-file + data=" + paramData + "&key=" + key))
+        window.open("http://localhost:3000/upload-file?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      } else {
+        window.open("http://localhost:3000/upload-file")
       }
       window.addEventListener("message", uploadSuccessHandler)
-    }
   };
 
   const uploadSuccessHandler = async (e) => {

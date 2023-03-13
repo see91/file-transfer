@@ -1,6 +1,6 @@
 export type requisiteQueryData = {
-    accountAddress: string
-    accountId: string
+    accountAddress: string | null
+    accountId: string | null
     redirectUrl: string
     sourceUrl: string
 }
