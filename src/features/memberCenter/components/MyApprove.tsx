@@ -264,32 +264,47 @@ export const MyApprove = () => {
    * select action
    */
   const statusSelectHandler = async (value) => {
+    const user = storage.getItem("userinfo");
     setStatus(value);
     setPageIndex(1);
-    const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
-      status: Number(value),
-      pageIndex: 1,
-      pageSize,
+    // const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
+    //   status: Number(value),
+    //   pageIndex: 1,
+    //   pageSize,
+    // };
+    const params: any = {
+      file_owner_id: user?.accountId,
+      status: 0,
+      paginate: {
+        page: 1,
+        page_size: 10,
+      },
     };
-    console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = await getFilesByStatusForAllApplyAsPublisher(
-      filesInfoParams,
-    );
+
+    // console.log("getFilesInfoByStatus send request data", filesInfoParams);
+    const approvalList = await getFilesByStatusForAllApplyAsPublisher(params);
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
 
   const pageChange = async (e, val) => {
     setPageIndex(val);
-    const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
-      status,
-      pageIndex: val,
-      pageSize,
+    // const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
+    //   status,
+    //   pageIndex: val,
+    //   pageSize,
+    // };
+    const user = storage.getItem("userinfo");
+    const params: any = {
+      file_owner_id: user?.accountId,
+      status: 0,
+      paginate: {
+        page: 1,
+        page_size: 10,
+      },
     };
-    console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = await getFilesByStatusForAllApplyAsPublisher(
-      filesInfoParams,
-    );
+    // console.log("getFilesInfoByStatus send request data", filesInfoParams);
+    const approvalList = await getFilesByStatusForAllApplyAsPublisher(params);
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
