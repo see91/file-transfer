@@ -49,10 +49,10 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       if (publicKey) {
         const paramData = encodeRequestData(queryData, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://localhost:3000?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
     } else {
-      window.open("http://localhost:3000?sourceUrl=www.127.0.0.1:8090&redirectUrl=" + document.location.toString())
+      window.open("http://localhost:3000?from=outside&sourceUrl=www.127.0.0.1:8090&redirectUrl=" + document.location.toString())
     }
     window.addEventListener("message", loginSuccessHandler)
   };

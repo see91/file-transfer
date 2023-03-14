@@ -99,7 +99,7 @@ export const FindDetail = () => {
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/apply?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://localhost:3000/apply?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
       window.addEventListener("message", applySuccessHandler)
     }

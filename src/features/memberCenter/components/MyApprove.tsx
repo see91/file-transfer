@@ -231,7 +231,7 @@ export const MyApprove = () => {
       if (uuid && publicKey){
         const paramData = encodeRequestData(approveParam, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/approve?data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://localhost:3000/approve?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
         window.addEventListener("message", approveSuccessHandler)
       }
     } else {
