@@ -140,8 +140,9 @@ export const FindDetail = () => {
     }
 
     (async (user) => {
-      const params: FileDetailRequestOptions = {
-        fileId: passedFile.file_id,
+      const params: any = {
+            file_id: passedFile.file_id,
+            consumer_id: passedFile.owner_id
       };
       const result = (await getFileDetail(params)).data;
 
@@ -155,11 +156,6 @@ export const FindDetail = () => {
       } else {
         result.creator_avatar = defaultAvatarImage;
       }
-
-      const aaaa = Object.assign({}, result, {
-        owner: result.creator || passedFile.owner,
-        src: passedFile.src,
-      })
 
       setDetailItem(
           Object.assign({}, result, {

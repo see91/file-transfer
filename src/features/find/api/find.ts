@@ -37,12 +37,7 @@ export const getFileList: (args: FileListRequestOptions) => Promise<any> = async
 export const getFileDetail: (args: FileDetailRequestOptions) => Promise<any> = async (
   data
 ): Promise<FileData> => {
-  const accountID = '913dddef1c97cad769ffab5369cc414f563b703449f84fb54fb6dbce583a2e30'
-  let sendData = {
-      file_id: data.fileId,
-      consumer_id: accountID,
-  };
-  return await axios.post('/file/detail', sendData)
+  return await axios.post('/file/detail', data)
   // return isMock
   //   ? await axios.post('/file/detail')
   //   : await sendMessageSync("getFileDetailInfo", data);
