@@ -34,6 +34,7 @@ export type approveRequestData = {
     from: string | null
     to: string
     applyId: string
+    days: string
 }
 
 

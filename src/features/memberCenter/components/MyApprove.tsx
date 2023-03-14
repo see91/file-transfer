@@ -226,7 +226,8 @@ export const MyApprove = () => {
         sourceUrl: document.domain,
         from: agentAccountAddress,
         to: '', //TODO
-        applyId: applyId
+        applyId: applyId,
+        days: ''
       }
 
       const uuid = await sessionStorage.getItem("uuid")
