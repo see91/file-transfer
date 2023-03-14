@@ -1,9 +1,11 @@
 import "@/assets/style/header.less";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultAvatarImage } from "@/utils/defaultImage";
+import { cache_user_key } from '@/features/auth/api/getLoginedUserInfo'
 
 import {
   getAvatarBase64String,
@@ -62,11 +64,9 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       const redirectUrl = date.redirectUrl
       if (date && redirectUrl /*&& redirectUrl == document.location.toString()*/) {
         if (date.action == 'login' && date.result == 'success') {
-          await sessionStorage.setItem("accountAddress", date.accountAddress)
-          await sessionStorage.setItem("accountId", date.accountId)
-          await sessionStorage.setItem("publicKey", date.publicKey)
+          storage.setItem(cache_user_key, date);
           window.removeEventListener("message", loginSuccessHandler)
-          alert(" login success")
+          window.location.reload()
         }
       }
   }

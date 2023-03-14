@@ -13,7 +13,7 @@ export const Login = ({ loginStatus }) => {
         <div className="connect">
           <img src={LoginIcon} alt="" />
           <p className="tip">Click Agent button to connect nulink agent</p>
-          <p>Agent has not been installed yet?</p>
+          {/* <p>Agent has not been installed yet?</p>
           <OvalButton
             title="Download agent"
             style={{ marginTop: "20px" }}
@@ -22,7 +22,7 @@ export const Login = ({ loginStatus }) => {
                 "https://download.nulink.org/release/agent/nulink-agent-1.0.zip",
               );
             }}
-          />
+          /> */}
           <p>
             Please refer to{" "}
             <a

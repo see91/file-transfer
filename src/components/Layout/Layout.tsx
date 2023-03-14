@@ -17,25 +17,19 @@ export const MainLayout = ({ children }: ProviderProps) => {
   const [user, setUser] = useState<any>();
   const [loginStatus, setLoginStatus] = useState<any>(0); // 0: logining //1: login failed //2: login success: : when user login succeed, the Login page is hidden
 
-  // console.log("user info: ", user);
-
   return (
     <>
       <Layout style={layoutStyle}>
         <BrowserRouter>
           <Header setLoginUser={setUser} setLoginStatus={setLoginStatus} />
-          <div>
-            <MyRoutes />
-            <Outlet />
-          </div>
-          {/* {!!user ? (
+          {!!user ? (
             <div>
               <MyRoutes />
               <Outlet />
             </div>
           ) : (
             <Login loginStatus={loginStatus} />
-          )} */}
+          )}
 
           <Footer />
         </BrowserRouter>
