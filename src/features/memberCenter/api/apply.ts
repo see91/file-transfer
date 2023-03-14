@@ -25,7 +25,9 @@ export const getApprovedFileContentByFileId: (args: ApprovedFileContentByFileIdR
 export const getFilesByStatusForAllApplyAsUser: (args: FilesByStatusForAllApplyAsUserRequestOptions) => Promise<any> = async (
   data
 ): Promise<unknown> => {
-  return isMock
-    ? await axios.post('/account/filesInfo')
-    : await sendMessageSync("getFilesByStatusForAllApplyAsUser", data);
+  return await axios.post('/apply/list', data)
+  // return isMock
+  //   ? await axios.post('/account/filesInfo')
+  //   : await sendMessageSync("getFilesByStatusForAllApplyAsUser", data);
+  // return await sendMessageSync("getFilesByStatusForAllApplyAsUser", data);
 };

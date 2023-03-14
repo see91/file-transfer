@@ -10,11 +10,11 @@ import { MyUpload } from "../components/MyUpload";
 import imgUrl from "@/assets/img/avatar.png";
 import editUrl from "../assets/edit_icon.svg";
 import OvalButton from "@/components/Button/OvalButton";
-// import {
-//   getAvatarBase64String,
-//   getUserCache,
-//   getUserDetailCache,
-// } from "@/features/auth/api/getLoginedUserInfo";
+import {
+  getAvatarBase64String,
+  getUserCache,
+  getUserDetailCache,
+} from "@/features/auth/api/getLoginedUserInfo";
 import Emitter from "@/lib/emitter";
 import dayjs from "dayjs";
 import { getUserFileTotal, getUserShareTotal } from "../api/account";
@@ -51,7 +51,7 @@ export const MemberCenter = () => {
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState(imgUrl);
   const [userDetailInfo, setUserDetails] = useState<any>({});
-  const [active, setActive] = useState("1");
+  const [active, setActive] = useState("2");
   const [dataFileTotal, setDataFileTotal] = useState({ list: [], total: 0 });
   const [dataShareTotal, setDataShareTotal] = useState({ list: [], total: 0 });
   const [user, setUser] = useState<any>();
@@ -72,28 +72,28 @@ export const MemberCenter = () => {
     }
   };
 
-  // const getUserInfo = async () => {
-  //   const user = getUserCache();
-  //   setUser(user);
+  const getUserInfo = async () => {
+    const user = getUserCache();
+    setUser(user);
 
-  //   const userDetailInfo = getUserDetailCache();
+    // const userDetailInfo = getUserDetailCache();
 
-  //   const ary: any = [];
-  //   JSON.parse(userDetailInfo.ranking).forEach((x) => {
-  //     ary.push(JSON.parse(x));
-  //   });
-  //   userDetailInfo.ranking = ary;
-  //   _fetch(userDetailInfo.account_id);
+    // const ary: any = [];
+    // JSON.parse(userDetailInfo.ranking).forEach((x) => {
+    //   ary.push(JSON.parse(x));
+    // });
+    // userDetailInfo.ranking = ary;
+    // _fetch(userDetailInfo.account_id);
 
-  //   setUserDetails(userDetailInfo);
+    // setUserDetails(userDetailInfo);
 
-  //   if (!!userDetailInfo && !!userDetailInfo.avatar) {
-  //     const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
-  //     if (!!avatarStr) {
-  //       setAvatar(avatarStr);
-  //     }
-  //   }
-  // };
+    // if (!!userDetailInfo && !!userDetailInfo.avatar) {
+    //   const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
+    //   if (!!avatarStr) {
+    //     setAvatar(avatarStr);
+    //   }
+    // }
+  };
 
   const _fetch = async (account_id) => {
     const params = {
@@ -134,7 +134,7 @@ export const MemberCenter = () => {
       // );
       // setUserDetails(newuserDetailInfo);
     });
-    // window.setTimeout(async () => await getUserInfo(), 0);
+    window.setTimeout(async () => await getUserInfo(), 0);
   }, []);
 
   const editTitle = () => {
@@ -193,7 +193,7 @@ export const MemberCenter = () => {
                     navigate("/modifyData");
                   }}
                 />
-                <ul className="ranking_area">
+                {/* <ul className="ranking_area">
                   {userDetailInfo?.ranking &&
                     userDetailInfo?.ranking.length > 0 &&
                     userDetailInfo.ranking.map((x) => (
@@ -211,9 +211,9 @@ export const MemberCenter = () => {
                         </Tooltip>
                       </li>
                     ))}
-                </ul>
+                </ul> */}
               </div>
-              <div>{user?.address}</div>
+              <div>{user?.accountAddress}</div>
               {/* <div className="member_introduction_text">
                 {userDetailInfo?.profile || t("member-center-introduce")}
               </div> */}
@@ -304,8 +304,8 @@ export const MemberCenter = () => {
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        // fill-rule="evenodd"
+                        // clip-rule="evenodd"
                         d="M11.5663 0.00490852L11.5663 0.00490828C11.5368 0.0024541 11.5074 0 11.4779 0C11.446 0 11.4166 0.00245426 11.3871 0.00490852C5.37662 0.0662651 0.522088 4.94779 0.5 10.9656V11.0049C0.5 17.0792 5.4257 22.0049 11.5 22.0049C17.5743 22.0049 22.5 17.0792 22.5 11.0049C22.5 4.9527 17.6111 0.0417224 11.5663 0.00490852ZM12.2535 7.86591C13.4389 7.81437 14.5875 7.62294 15.6845 7.31124C15.9447 8.2365 16.1066 9.20348 16.1631 10.1999H12.2535V7.86591ZM12.2535 1.60754V6.28782C13.2573 6.23873 14.234 6.07675 15.1667 5.8166C14.5163 4.24342 13.5714 2.8224 12.4032 1.61981C12.3786 1.61736 12.3535 1.61552 12.3283 1.61368L12.3283 1.61368L12.3283 1.61367L12.3283 1.61367L12.3283 1.61367L12.3283 1.61367L12.3283 1.61367L12.3283 1.61367L12.3282 1.61367L12.3282 1.61367L12.3282 1.61367L12.3282 1.61367L12.3282 1.61367L12.3282 1.61367L12.3282 1.61367C12.3031 1.61183 12.278 1.60999 12.2535 1.60754ZM10.7024 1.61245V6.278C9.72802 6.21419 8.78068 6.0473 7.87506 5.78715C8.54507 4.22133 9.50223 2.80767 10.6852 1.6149C10.6901 1.61245 10.6975 1.61245 10.7024 1.61245ZM10.7024 10.1999V7.85609C9.5415 7.78737 8.41745 7.58858 7.34003 7.26952C7.06515 8.20705 6.8909 9.18876 6.82954 10.1999H10.7024ZM5.25145 10.1999H2.10754C2.24989 8.52365 2.83155 6.9701 3.73472 5.65707C4.40718 6.07184 5.11401 6.43507 5.85274 6.74186C5.52387 7.84873 5.31772 9.00469 5.25145 10.1999ZM5.84784 15.295C5.5116 14.1635 5.30544 12.9781 5.24654 11.751H2.10263C2.23516 13.4592 2.82419 15.0397 3.74944 16.3699C4.417 15.9576 5.11647 15.5993 5.84784 15.295ZM6.82463 11.751H10.7024V14.1807C9.53905 14.247 8.41008 14.4482 7.33512 14.7673C7.05288 13.8028 6.87863 12.7916 6.82463 11.751ZM10.7024 20.3998V15.7613C9.72311 15.8251 8.77332 15.992 7.86278 16.257C8.52298 17.8057 9.46542 19.2071 10.6263 20.3925L10.7024 20.3998ZM12.2535 20.4023V15.749C13.2352 15.7981 14.1899 15.9527 15.1053 16.2006C14.4279 17.7811 13.456 19.2046 12.2535 20.4023ZM12.2535 11.751V14.1709C13.4241 14.2224 14.558 14.409 15.6428 14.7133C15.9201 13.766 16.0968 12.7744 16.1582 11.751H12.2535ZM17.7338 11.751H20.8974C20.7648 13.4297 20.1954 14.9833 19.2996 16.2987C18.6124 15.884 17.886 15.5207 17.1325 15.2189C17.4639 14.112 17.67 12.9511 17.7338 11.751ZM17.1767 6.7983C17.4909 7.88554 17.6823 9.02677 17.7387 10.1999V10.1975H20.8925C20.7526 8.55065 20.1881 7.02409 19.3119 5.72824C18.6345 6.14056 17.9203 6.49888 17.1767 6.7983ZM18.313 4.48884C17.7854 4.79808 17.2332 5.0705 16.6613 5.30611C16.2171 4.21151 15.6452 3.18318 14.9654 2.23583C16.2416 2.74141 17.3804 3.51696 18.313 4.48884ZM6.38532 5.25703C6.84181 4.16979 7.42347 3.14636 8.11067 2.20638C6.832 2.69969 5.68585 3.46296 4.74833 4.42749C5.27108 4.73918 5.81838 5.01651 6.38532 5.25703ZM4.76305 17.5995C5.27845 17.2927 5.81838 17.0203 6.3755 16.7847C6.82218 17.8523 7.38666 18.8585 8.05667 19.7863C6.80745 19.2929 5.68831 18.5419 4.76305 17.5995ZM16.6 16.7037C16.1336 17.8204 15.5348 18.8684 14.8231 19.828C16.1484 19.3298 17.3338 18.5395 18.2959 17.5357C17.7535 17.2191 17.1865 16.9418 16.6 16.7037Z"
                         fill={userDetailInfo.user_site ? "#503A86" : darkColor}
                       />
@@ -352,51 +352,8 @@ export const MemberCenter = () => {
             </div>
           </div>
         </div>
-        <div className="member_center_dataIn">
-          <p>Statistical Time: 2022.12.01 ~ 2022.12.31</p>
-          <div className="data-indicators-area">
-            <ul className="data-indicators">
-              <li>
-                <div className="title-logo">
-                  <svg
-                    width="24"
-                    height="16"
-                    viewBox="0 0 24 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18.9999 16.0001H5.99992C2.87429 16.002 0.270809 13.604 0.0162787 10.4887C-0.238251 7.37347 1.94144 4.58465 5.02592 4.07911C6.44563 1.562 9.11003 0.00362534 11.9999 5.65992e-05C13.8019 -0.00675485 15.5524 0.601415 16.9619 1.72411C18.346 2.82197 19.33 4.34509 19.7619 6.05811C22.3458 6.45514 24.1877 8.77563 23.9879 11.3822C23.7882 13.9888 21.6141 16.0015 18.9999 16.0001ZM11.9999 2.0001C9.83163 2.00267 7.83259 3.17221 6.76792 5.06111L6.29992 5.90011L5.35091 6.05511C3.3012 6.39852 1.85592 8.25441 2.02513 10.3258C2.19433 12.3972 3.92164 13.9939 5.99992 14.0001H18.9999C20.5685 14.0017 21.8735 12.7947 21.9941 11.2308C22.1147 9.66685 21.0102 8.27401 19.4599 8.03511L18.1439 7.83511L17.8219 6.54311C17.1572 3.86992 14.7545 1.99507 11.9999 2.0001ZM13.4499 12.0001H10.5499V9.00011H7.99992L11.9999 5.00011L15.9999 9.00011H13.4499V12.0001Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <span>Files Uploaded</span>
-                </div>
-                <span>{dataFileTotal.total}</span>
-              </li>
-              <li>
-                <div className="title-logo">
-                  <svg
-                    width="16"
-                    height="20"
-                    viewBox="0 0 16 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14 20H2C0.89543 20 0 19.1046 0 18V2C0 0.89543 0.89543 0 2 0H9C9.0109 0.000472319 9.02167 0.00249256 9.032 0.006C9.04177 0.00901724 9.05182 0.0110277 9.062 0.012C9.15019 0.0176532 9.23726 0.0347982 9.321 0.063L9.349 0.072C9.37167 0.079682 9.39373 0.0890412 9.415 0.1C9.52394 0.148424 9.62321 0.216185 9.708 0.3L15.708 6.3C15.7918 6.38479 15.8596 6.48406 15.908 6.593C15.918 6.615 15.925 6.638 15.933 6.661L15.942 6.687C15.9699 6.77039 15.9864 6.85718 15.991 6.945C15.9926 6.95418 15.9949 6.96322 15.998 6.972C15.9998 6.98122 16.0004 6.99062 16.0001 7V18C16.0001 19.1046 15.1046 20 14 20ZM2 2V18H14V8H9C8.44772 8 8 7.55228 8 7V2H2ZM10 3.414V6H12.586L10 3.414Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <span>File Sharing Count</span>
-                </div>
-                <span>{dataShareTotal.total}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
         <div className="member_center_tab">
-          <div
+          {/* <div
             className={
               active === "1"
                 ? "member_center_tab_item active"
@@ -408,7 +365,7 @@ export const MemberCenter = () => {
           >
             {t<string>("member-center-a-tab-1")}
             <div className="line "></div>
-          </div>
+          </div> */}
           <div
             className={
               active === "2"
@@ -435,7 +392,7 @@ export const MemberCenter = () => {
             {t<string>("member-center-a-tab-3")}
             <div className="line"></div>
           </div>
-          <div
+          {/* <div
             className={
               active === "4"
                 ? "member_center_tab_item active"
@@ -447,7 +404,7 @@ export const MemberCenter = () => {
           >
             {t<string>("member-center-a-tab-4")}
             <div className="line"></div>
-          </div>
+          </div> */}
         </div>
         <div className="member_center_content">{ContentComponent()}</div>
       </div>

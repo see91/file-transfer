@@ -85,9 +85,10 @@ export const refuseApplicationOfUseFiles: (args: RefuseApplicationOfUseFilesRequ
 export const getFilesByStatusForAllApplyAsPublisher: (args: FilesByStatusForAllApplyAsPublisherRequestOptions) => Promise<any> = async (
   data
 ): Promise<unknown> => {
-  return isMock
-    ? await axios.post('/account/filesInfo')
-    : await sendMessageSync("getFilesByStatusForAllApplyAsPublisher", data);
+  return await axios.post('/apply/list', data)
+  // return isMock
+  //   ? await axios.post('/account/filesInfo')
+  //   : await sendMessageSync("getFilesByStatusForAllApplyAsPublisher", data);
 };
 
 //the method be obsoleted please call method of getUserInfo below, from the agent

@@ -183,25 +183,41 @@ export const MyApply = () => {
   }
 
   const statusSelectHandler = async (value) => {
+    const user = storage.getItem("userinfo");
     setStatus(value);
     setPageIndex(1);
-    const params: FilesByStatusForAllApplyAsUserRequestOptions = {
-      status: Number(value),
-      pageSize,
-      pageIndex: 1,
+    const params: any = {
+      proposer_id: user?.accountId,
+      // signature: "1P3HfMIdhkA_CVuO09zDC",
+      status: 0,
+      paginate: {
+        page: 1,
+        page_size: 10,
+      },
     };
-    const result = await getFilesByStatusForAllApplyAsUser(params);
+    const result = (await getFilesByStatusForAllApplyAsUser(params)).data;
     setApplyList(result?.list || []);
     setTotal(result?.total || 0);
   };
   const pageChange = async (e, val) => {
     setPageIndex(val);
-    const params: FilesByStatusForAllApplyAsUserRequestOptions = {
-      status,
-      pageSize,
-      pageIndex: val,
+    // const params: FilesByStatusForAllApplyAsUserRequestOptions = {
+    //   status,
+    //   pageSize,
+    //   pageIndex: val,
+    // };
+    const user = storage.getItem("userinfo");
+    const params: any = {
+      proposer_id: user?.accountId,
+      // signature: "1P3HfMIdhkA_CVuO09zDC",
+      status: 0,
+      paginate: {
+        page: val,
+        page_size: 10,
+      },
     };
-    const result = await getFilesByStatusForAllApplyAsUser(params);
+
+    const result = (await getFilesByStatusForAllApplyAsUser(params)).data;
     setApplyList(result?.list || []);
     setTotal(result?.total || 0);
   };
