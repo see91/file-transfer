@@ -56,11 +56,6 @@ const btnStyleOk = {
   marginLeft: "20px",
 };
 
-const _user = {
-  address: "0x85859b7f3b3e5955a594d0ccf50ede9058cab6e5",
-  id: "15f5b5975f21d95becd59e3585859b7f3b3e5955a594d0ccf50ede9058cab6e5",
-  name: "222222",
-};
 export const FindDetail = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -73,14 +68,13 @@ export const FindDetail = () => {
   const [buttonShow, setButtonShow] = useState(true);
   const [visible, setVisible] = useState(false); // result tips popup window
   const [bUploader, setIsUploader] = useState(false); // user.id === detailItem.creator_id id the uploader
-  const [user, setUser] = useState(_user);
+  const [user, setUser] = useState(null);
 
   /**
    * apply for file
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-
     const perAccountAddress = sessionStorage.getItem("accountAddress");
     const perAccountId = sessionStorage.getItem("accountId");
     if (perAccountAddress && perAccountId) {
@@ -122,12 +116,12 @@ export const FindDetail = () => {
     }
 
   const _getFileDetail = async () => {
-    // const user = getUserCache();
-    // setUser(user);
+    const user = getUserCache();
+    setUser(user);
 
-    // if (!user) {
-    //   return;
-    // }
+    if (!user) {
+      return;
+    }
 
     // get state param by find.tsx page: navigate("/findDetail", { state: fileDetail });  // pass param between pages
     let passedFile: any = {};
@@ -145,8 +139,7 @@ export const FindDetail = () => {
       const params: FileDetailRequestOptions = {
         fileId: passedFile.file_id,
       };
-      const result = await getFileDetail(params);
-      // console.log("result of file detail", result);
+      const result = (await getFileDetail(params)).data;
 
       if (!!result.creator_avatar) {
         const avatarStr = await getAvatarBase64String(result.creator_avatar);
@@ -158,6 +151,11 @@ export const FindDetail = () => {
       } else {
         result.creator_avatar = defaultAvatarImage;
       }
+
+      const aaaa = Object.assign({}, result, {
+        owner: result.creator || passedFile.owner,
+        src: passedFile.src,
+      })
 
       setDetailItem(
           Object.assign({}, result, {
@@ -399,7 +397,7 @@ export const FindDetail = () => {
                   <div className="left_color">
                     {t<string>("find-detail-a-info-label-2")}：
                   </div>
-                  <div className="right_color">
+                <div className="right_color">
                     {formatDate(detailItem.file_created_at * 1000)}
                   </div>
                 </div>
