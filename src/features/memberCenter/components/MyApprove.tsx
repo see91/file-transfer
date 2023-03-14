@@ -41,6 +41,7 @@ import {
 } from "@/features/auth/api/applyStatusOfBeingApprovedOrApproved";
 import { approveRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
+import storage from "@/utils/storage";
 dayjs.extend(utc);
 
 const { TextArea } = Input;
@@ -213,21 +214,24 @@ export const MyApprove = () => {
 
     const { applyId } = useWalletParams as UseWalletPayRequestOptions;
 
-    const perAccountAddress = sessionStorage.getItem("accountAddress");
-    const perAccountId = sessionStorage.getItem("accountId");
-    if (perAccountAddress && perAccountId){
+    const userInfo = storage.getItem("userinfo");
+    const user = JSON.parse(userInfo)
+    const agentAccountAddress = user.accountAddress
+    const agentAccountId = user.accountId
+    if (agentAccountAddress && agentAccountId){
       const approveParam: approveRequestData = {
-        accountAddress:  perAccountAddress,
-        accountId: perAccountId,
+        accountAddress:  agentAccountAddress,
+        accountId: agentAccountId,
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
-        from: perAccountAddress,
+        from: agentAccountAddress,
         to: '', //TODO
-        applyId: applyId
+        applyId: applyId,
+        days: ''
       }
 
       const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("publicKey")
+      const publicKey = userInfo.publicKey
       if (uuid && publicKey){
         const paramData = encodeRequestData(approveParam, uuid)
         const key = encodeRequestData(uuid, publicKey)

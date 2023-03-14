@@ -39,6 +39,7 @@ import {
 import { resolveModuleNameFromCache } from "typescript";
 import {applyRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
+import storage from "@/utils/storage";
 const { Option } = Select;
 
 const btnStyle = {
@@ -75,12 +76,15 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-    const perAccountAddress = sessionStorage.getItem("accountAddress");
-    const perAccountId = sessionStorage.getItem("accountId");
-    if (perAccountAddress && perAccountId) {
+
+    const userInfo = storage.getItem("userinfo");
+    // const user = JSON.parse(userInfo)
+    const agentAccountAddress = userInfo.accountAddress
+    const agentAccountId = userInfo.accountId
+    if (agentAccountAddress && agentAccountId) {
       const applyParam: applyRequestData = {
-        accountAddress: perAccountAddress,
-        accountId: perAccountId,
+        accountAddress: agentAccountAddress,
+        accountId: agentAccountId,
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
         fileName: detailItem.file_name,
@@ -89,13 +93,13 @@ export const FindDetail = () => {
       }
 
       const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("publicKey")
+      const publicKey = userInfo.publicKey
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid)
         const key = encodeRequestData(uuid, publicKey)
         window.open("http://localhost:3000/apply?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.addEventListener("message", applySuccessHandler)
       }
-      window.addEventListener("message", applySuccessHandler)
     }
   };
 

@@ -18,6 +18,7 @@ import { Pagination } from "@mui/material";
 import DataIndicators from "../components/DataIndicators";
 import {applyRequestData, requisiteQueryData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
+import storage from "@/utils/storage";
 
 const { Option } = Select;
 const formItemStyle = {
@@ -220,25 +221,27 @@ export const Find = () => {
   };
 
   const _uploadAction = async () => {
-    const perAccountAddress = sessionStorage.getItem("accountAddress");
-    const perAccountId = sessionStorage.getItem("accountId");
-      const queryData: requisiteQueryData = {
-        accountAddress: perAccountAddress,
-        accountId: perAccountId,
-        redirectUrl: document.location.toString(),
-        sourceUrl: document.domain
-      }
+    const userInfo = storage.getItem("userinfo");
+    const user = JSON.parse(userInfo)
+    const agentAccountAddress = user.accountAddress
+    const agentAccountId = user.accountId
+    const queryData: requisiteQueryData = {
+      accountAddress: agentAccountAddress,
+      accountId: agentAccountId,
+      redirectUrl: document.location.toString(),
+      sourceUrl: document.domain
+    }
 
-      const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("publicKey")
-      if (uuid && publicKey) {
-        const paramData = encodeRequestData(queryData, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/upload-file?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-      } else {
-        window.open("http://localhost:3000/upload-file?from=outside")
-      }
-      window.addEventListener("message", uploadSuccessHandler)
+    const uuid = await sessionStorage.getItem("uuid")
+    const publicKey = await userInfo.publicKey
+    if (uuid && publicKey) {
+      const paramData = encodeRequestData(queryData, uuid)
+      const key = encodeRequestData(uuid, publicKey)
+      window.open("http://localhost:3000/upload-file?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+    } else {
+      window.open("http://localhost:3000/upload-file?from=outside")
+    }
+    window.addEventListener("message", uploadSuccessHandler)
   };
 
   const uploadSuccessHandler = async (e) => {

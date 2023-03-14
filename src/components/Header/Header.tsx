@@ -42,12 +42,12 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       redirectUrl: document.location.toString(),
       sourceUrl: document.domain
     }
-    const linkedAccountAddress = sessionStorage.getItem("accountAddress");
-    const linkedAccountId = sessionStorage.getItem("accountId");
-    if (linkedAccountAddress && linkedAccountId){
-      queryData.accountAddress = linkedAccountAddress
-      queryData.accountId = linkedAccountId
-      const publicKey = await sessionStorage.getItem("publicKey")
+    const userInfo = storage.getItem("userinfo");
+    if (userInfo){
+      const user = JSON.parse(userInfo)
+      queryData.accountAddress = user.accountAddress
+      queryData.accountId = user.accountAddress
+      const publicKey = user.publicKey
       if (publicKey) {
         const paramData = encodeRequestData(queryData, uuid)
         const key = encodeRequestData(uuid, publicKey)
