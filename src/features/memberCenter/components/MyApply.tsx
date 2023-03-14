@@ -16,6 +16,7 @@ import { locale } from "@/config";
 import OvalButton from "@/components/Button/OvalButton";
 import {decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
+import storage from "@/utils/storage";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -137,13 +138,15 @@ export const MyApply = () => {
 
   const download = async (record) => {
 
-    const perAccountAddress = sessionStorage.getItem("accountAddress");
-    const perAccountId = sessionStorage.getItem("accountId");
+    const userInfo = storage.getItem("userinfo");
+    const user = JSON.parse(userInfo)
+    const agentAccountAddress = user.accountAddress
+    const agentAccountId = user.accountId
 
-    if (perAccountAddress && perAccountId){
+    if (agentAccountAddress && agentAccountId){
       const decryptionRequestData: decryptionRequestData = {
-        accountAddress: perAccountAddress,
-        accountId: perAccountId,
+        accountAddress: agentAccountAddress,
+        accountId: agentAccountId,
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
         fileId: record.file_id,
@@ -153,7 +156,7 @@ export const MyApply = () => {
       }
 
       const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = await sessionStorage.getItem("publicKey")
+      const publicKey = userInfo.publicKey
       if (uuid && publicKey){
         const paramData = encodeRequestData(decryptionRequestData, uuid)
         const key = encodeRequestData(uuid, publicKey)
