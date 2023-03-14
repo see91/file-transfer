@@ -78,7 +78,6 @@ export const FindDetail = () => {
   const applyForFile = async (values) => {
 
     const userInfo = storage.getItem("userinfo");
-    // const user = JSON.parse(userInfo)
     const agentAccountAddress = userInfo.accountAddress
     const agentAccountId = userInfo.accountId
     if (agentAccountAddress && agentAccountId) {
@@ -89,7 +88,9 @@ export const FindDetail = () => {
         sourceUrl: document.domain,
         fileName: detailItem.file_name,
         fileId: detailItem.file_id,
-        owner: detailItem.creator_address
+        owner: detailItem.creator_address,
+        user: userInfo.accountAddress,
+        days: values.usageDays
       }
 
       const uuid = await sessionStorage.getItem("uuid")
@@ -97,7 +98,7 @@ export const FindDetail = () => {
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/apply?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://localhost:3000/request-files?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
         window.addEventListener("message", applySuccessHandler)
       }
     }
@@ -109,7 +110,7 @@ export const FindDetail = () => {
       if (responseData && redirectUrl && redirectUrl == document.location.toString()) {
         if (responseData.action == 'apply' && responseData.result == 'success') {
           window.removeEventListener("message", applySuccessHandler)
-          alert("apply success")
+          window.location.reload()
         }
         if (responseData.subAction && responseData.subAction == 'relogin') {
           await sessionStorage.setItem('accountAddress', responseData.accountAddress)

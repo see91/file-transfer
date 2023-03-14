@@ -24,6 +24,8 @@ export type applyRequestData = {
     fileName: string
     fileId: string
     owner: string
+    user: string
+    days: string
 }
 
 export type approveRequestData = {
