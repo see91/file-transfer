@@ -9,6 +9,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { getFileList, type FileListRequestOptions } from "../api/find";
 import { getThumbnailBase64 } from "@/utils/image";
 import {
+  cache_user_key,
   getAvatarBase64String,
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
@@ -248,13 +249,16 @@ export const Find = () => {
     const responseData = JSON.parse(e.data)
     const redirectUrl = responseData.redirectUrl
     if (responseData && redirectUrl) {
-      if (responseData.action == 'upload' && responseData.result == 'success') {
-        alert(" upload success")
-      }
       if (responseData.subAction && responseData.subAction == 'relogin') {
-        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
-        await sessionStorage.setItem('accountId', responseData.accountId)
-        await sessionStorage.setItem('publicKey', responseData.publicKey)
+        const userInfo = {
+          accountAddress: responseData.accountAddress,
+          accountId: responseData.accountId,
+          publicKey: responseData.publicKey
+        }
+        storage.setItem(cache_user_key, JSON.stringify(userInfo));
+      }
+      if (responseData.action == 'upload' && responseData.result == 'success') {
+        window.location.reload()
       }
     }
   }

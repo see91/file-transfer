@@ -17,6 +17,7 @@ import OvalButton from "@/components/Button/OvalButton";
 import {decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
+import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -170,14 +171,17 @@ export const MyApply = () => {
     const responseData = JSON.parse(e.data)
     const redirectUrl = responseData.redirectUrl
     if (responseData && redirectUrl ) {
+      if (responseData.subAction && responseData.subAction == 'relogin') {
+        const userInfo = {
+          accountAddress: responseData.accountAddress,
+          accountId: responseData.accountId,
+          publicKey: responseData.publicKey
+        }
+        storage.setItem(cache_user_key, JSON.stringify(userInfo));
+      }
       if (responseData.action == 'approve' && responseData.result == 'success') {
         window.removeEventListener("message", authorizationSuccessHandler)
         alert("authorization success")
-      }
-      if (responseData.subAction && responseData.subAction == 'relogin') {
-        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
-        await sessionStorage.setItem('accountId', responseData.accountId)
-        await sessionStorage.setItem('publicKey', responseData.publicKey)
       }
     }
   }
