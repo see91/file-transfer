@@ -38,8 +38,8 @@ import {
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
 import { resolveModuleNameFromCache } from "typescript";
-import {applyRequestData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
+import { applyRequestData } from "@/unlinkagent/types";
+import { encodeRequestData } from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 const { Option } = Select;
 
@@ -77,10 +77,9 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-
     const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = userInfo.accountAddress
-    const agentAccountId = userInfo.accountId
+    const agentAccountAddress = userInfo.accountAddress;
+    const agentAccountId = userInfo.accountId;
     if (agentAccountAddress && agentAccountId) {
       const applyParam: applyRequestData = {
         accountAddress: agentAccountAddress,
@@ -91,38 +90,47 @@ export const FindDetail = () => {
         fileId: detailItem.file_id,
         owner: detailItem.creator_address,
         user: userInfo.accountAddress,
-        days: values.usageDays
-      }
+        days: values.usageDays,
+      };
 
-      const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = userInfo.publicKey
+      const uuid = await sessionStorage.getItem("uuid");
+      const publicKey = userInfo.publicKey;
       if (uuid && publicKey) {
-        const paramData = encodeRequestData(applyParam, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/request-files?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-        window.addEventListener("message", applySuccessHandler)
+        const paramData = encodeRequestData(applyParam, uuid);
+        const key = encodeRequestData(uuid, publicKey);
+        window.open(
+          "http://localhost:3000/request-files?from=outside&data=" +
+            encodeURIComponent(paramData) +
+            "&key=" +
+            encodeURIComponent(key),
+        );
+        window.addEventListener("message", applySuccessHandler);
       }
     }
   };
 
-    const applySuccessHandler = async (e) => {
-      const responseData = JSON.parse(e.data)
-      const redirectUrl = responseData.redirectUrl
-      if (responseData && redirectUrl && redirectUrl == document.location.toString()) {
-        if (responseData.subAction && responseData.subAction == 'relogin') {
-          const userInfo = {
-            accountAddress: responseData.accountAddress,
-            accountId: responseData.accountId,
-            publicKey: responseData.publicKey
-          }
-          storage.setItem(cache_user_key, JSON.stringify(userInfo));
-        }
-        if (responseData.action == 'apply' && responseData.result == 'success') {
-          window.removeEventListener("message", applySuccessHandler)
-          window.location.reload()
-        }
+  const applySuccessHandler = async (e) => {
+    const responseData = JSON.parse(e.data);
+    const redirectUrl = responseData.redirectUrl;
+    if (
+      responseData &&
+      redirectUrl &&
+      redirectUrl == document.location.toString()
+    ) {
+      if (responseData.subAction && responseData.subAction == "relogin") {
+        const userInfo = {
+          accountAddress: responseData.accountAddress,
+          accountId: responseData.accountId,
+          publicKey: responseData.publicKey,
+        };
+        storage.setItem(cache_user_key, JSON.stringify(userInfo));
+      }
+      if (responseData.action == "apply" && responseData.result == "success") {
+        window.removeEventListener("message", applySuccessHandler);
+        window.location.reload();
       }
     }
+  };
 
   const _getFileDetail = async () => {
     const user = getUserCache();
@@ -146,8 +154,8 @@ export const FindDetail = () => {
 
     (async (user) => {
       const params: any = {
-            file_id: passedFile.file_id,
-            consumer_id: user.accountId
+        file_id: passedFile.file_id,
+        consumer_id: user.accountId,
       };
       const result = (await getFileDetail(params)).data;
 
@@ -163,10 +171,10 @@ export const FindDetail = () => {
       }
 
       setDetailItem(
-          Object.assign({}, result, {
-            owner: result.creator || passedFile.owner,
-            src: passedFile.src,
-          }),
+        Object.assign({}, result, {
+          owner: result.creator || passedFile.owner,
+          src: passedFile.src,
+        }),
       );
 
       const isUploader = result.creator_id === user.id;
@@ -258,43 +266,43 @@ export const FindDetail = () => {
       case 1:
         // pending review
         return (
-            <div className="find_detail_apply_status">
-              <ClockCircleFilled
-                  name="dateTime"
-                  style={{ color: "#68BB8D", marginRight: "10px" }}
-              />
-              {t<string>("find-detail-a-status-1")}
-            </div>
+          <div className="find_detail_apply_status">
+            <ClockCircleFilled
+              name="dateTime"
+              style={{ color: "#68BB8D", marginRight: "10px" }}
+            />
+            {t<string>("find-detail-a-status-1")}
+          </div>
         );
       case 2:
         // application passed
         return (
-            <div className="find_detail_apply_status">
-              <CheckCircleFilled
-                  style={{ color: "#68BB8D", marginRight: "10px" }}
-              />
-              {t<string>("find-detail-a-status-2")}
-            </div>
+          <div className="find_detail_apply_status">
+            <CheckCircleFilled
+              style={{ color: "#68BB8D", marginRight: "10px" }}
+            />
+            {t<string>("find-detail-a-status-2")}
+          </div>
         );
       case 3:
         // application rejected
         return (
-            <div className="find_detail_apply_status_error">
-              <CloseCircleFilled
-                  style={{ color: "#FF3838", marginRight: "10px" }}
-              />
-              {t<string>("find-detail-a-status-3")}
-            </div>
+          <div className="find_detail_apply_status_error">
+            <CloseCircleFilled
+              style={{ color: "#FF3838", marginRight: "10px" }}
+            />
+            {t<string>("find-detail-a-status-3")}
+          </div>
         );
       case 4:
         // application expired, out of date
         return (
-            <div className="find_detail_apply_status_disabled">
-              <ExclamationCircleFilled
-                  style={{ color: "#939CB0", marginRight: "10px" }}
-              />
-              {t<string>("find-detail-a-status-4")}
-            </div>
+          <div className="find_detail_apply_status_disabled">
+            <ExclamationCircleFilled
+              style={{ color: "#939CB0", marginRight: "10px" }}
+            />
+            {t<string>("find-detail-a-status-4")}
+          </div>
         );
     }
   };
@@ -311,10 +319,10 @@ export const FindDetail = () => {
       case 2:
         // application passed
         return (
-            <OvalButton
-                title={t<string>("find-detail-a-btn-1")}
-                onClick={() => fileDownload()}
-            />
+          <OvalButton
+            title={t<string>("find-detail-a-btn-1")}
+            onClick={() => fileDownload()}
+          />
         );
       case 3:
       case 4:
@@ -324,10 +332,10 @@ export const FindDetail = () => {
          * application expired, out of date
          */
         return (
-            <OvalButton
-                title={t<string>("find-detail-a-btn-2")}
-                onClick={() => applyDownload()}
-            />
+          <OvalButton
+            title={t<string>("find-detail-a-btn-2")}
+            onClick={() => applyDownload()}
+          />
         );
     }
   };
@@ -338,31 +346,29 @@ export const FindDetail = () => {
     display: "inline-block",
   };
 
-  console.log(detailItem, "fd");
-
   return (
-      <div className="find_detail marb-30">
-        <Row className="find_detail_top">
-          <Col span="12">
-            <div className="find_detail_top_left">
-              {!detailItem.thumbnail ? (
-                  <div className="file_img_area">
-                    <img
-                        style={fileImgAreaStyle}
-                        src={detailItem.src || defaultImage}
-                        alt=""
-                    />
-                  </div>
-              ) : (
-                  <img src={detailItem.src} alt="" onError={defaultImageHandler} />
-              )}
-            </div>
-          </Col>
-          <Col span="12">
-            <div className="find_detail_top_right">
-              <div className="find_detail_top_right_title flex_row">
-                <div>{detailItem.file_name}</div>
-                {/* <div>
+    <div className="find_detail marb-30">
+      <Row className="find_detail_top">
+        <Col span="12">
+          <div className="find_detail_top_left">
+            {!detailItem.thumbnail ? (
+              <div className="file_img_area">
+                <img
+                  style={fileImgAreaStyle}
+                  src={detailItem.src || defaultImage}
+                  alt=""
+                />
+              </div>
+            ) : (
+              <img src={detailItem.src} alt="" onError={defaultImageHandler} />
+            )}
+          </div>
+        </Col>
+        <Col span="12">
+          <div className="find_detail_top_right">
+            <div className="find_detail_top_right_title flex_row">
+              <div>{detailItem.file_name}</div>
+              {/* <div>
                 <UploadOutlined
                   style={{
                     fontSize: "16px",
@@ -372,41 +378,41 @@ export const FindDetail = () => {
                 />
                 0
               </div> */}
+            </div>
+            <div className="find_detail_top_right_content">
+              <div
+                className="flex_row top_right_content_item mtb_30 pointer"
+                onClick={() => {
+                  navigate(`/creator/${detailItem.creator_id}`);
+                }}
+              >
+                <img
+                  src={detailItem.creator_avatar || defaultAvatarImage}
+                  alt=""
+                />
+                <div>
+                  <div>{t<string>("find-detail-a-info-label-1")}</div>
+                  {/* <div>{t<string>("find-detail-account-address")}</div> */}
+                  <div>{detailItem.owner}</div>
+                </div>
               </div>
-              <div className="find_detail_top_right_content">
-                <div
-                    className="flex_row top_right_content_item mtb_30 pointer"
-                    onClick={() => {
-                      navigate(`/creator/${detailItem.creator_id}`);
-                    }}
-                >
-                  <img
-                      src={detailItem.creator_avatar || defaultAvatarImage}
-                      alt=""
-                  />
-                  <div>
-                    <div>{t<string>("find-detail-a-info-label-1")}</div>
-                    {/* <div>{t<string>("find-detail-account-address")}</div> */}
-                    <div>{detailItem.owner}</div>
-                  </div>
+              <div className="flex_row top_right_content_item">
+                <div className="left_color">
+                  {t<string>("find-detail-ipfs-file-address")}：
                 </div>
-                <div className="flex_row top_right_content_item">
-                  <div className="left_color">
-                    {t<string>("find-detail-ipfs-file-address")}：
-                  </div>
-                  <div className="right_color">
-                    {detailItem.file_ipfs_address}
-                  </div>
-                </div>
-                <div className="flex_row top_right_content_item">
-                  <div className="left_color">
-                    {t<string>("find-detail-a-info-label-2")}：
-                  </div>
                 <div className="right_color">
-                    {formatDate(detailItem.file_created_at * 1000)}
-                  </div>
+                  {detailItem.file_ipfs_address}
                 </div>
-                {/* <div className="flex_row top_right_content_item">
+              </div>
+              <div className="flex_row top_right_content_item">
+                <div className="left_color">
+                  {t<string>("find-detail-a-info-label-2")}：
+                </div>
+                <div className="right_color">
+                  {formatDate(detailItem.file_created_at * 1000)}
+                </div>
+              </div>
+              {/* <div className="flex_row top_right_content_item">
                 <div className="left_color">Token ID：</div>
                 <div className="right_color">9518</div>
               </div>
