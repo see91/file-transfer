@@ -225,9 +225,9 @@ export const MyApprove = () => {
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
         from: agentAccountAddress,
-        to: "", //TODO
+        to: currentRecord.proposer_address,
         applyId: applyId,
-        days: "",
+        days: currentRecord.days,
       };
 
       const uuid = await sessionStorage.getItem("uuid");
