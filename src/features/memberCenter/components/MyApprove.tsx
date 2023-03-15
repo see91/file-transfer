@@ -233,7 +233,6 @@ export const MyApprove = () => {
 
       const uuid = await sessionStorage.getItem("uuid");
       const publicKey = userInfo.publicKey;
-      console.log(uuid, publicKey);
       
       if (uuid && publicKey) {
         const paramData = encodeRequestData(approveParam, uuid);
@@ -253,7 +252,7 @@ export const MyApprove = () => {
   };
 
   const approveSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data);
+    const responseData = e.data;
     const redirectUrl = responseData.redirectUrl;
     if (responseData && redirectUrl) {
       if (responseData.action == "approve") {
@@ -284,7 +283,7 @@ export const MyApprove = () => {
     // };
     const params: any = {
       file_owner_id: user?.accountId,
-      status: 1,
+      status: 0,
       paginate: {
         page: 1,
         page_size: 10,
