@@ -228,6 +228,7 @@ export const MyApprove = () => {
         to: currentRecord.proposer_address,
         applyId: applyId,
         days: currentRecord.days,
+        remark :currentRecord.remark
       };
 
       const uuid = await sessionStorage.getItem("uuid");

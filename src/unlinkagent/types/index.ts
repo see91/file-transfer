@@ -37,6 +37,7 @@ export type approveRequestData = {
     to: string
     applyId: string
     days: string
+    remark: string
 }
 
 
