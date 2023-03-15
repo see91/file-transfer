@@ -223,7 +223,6 @@ export const Find = () => {
 
   const _uploadAction = async () => {
     const userInfo = storage.getItem("userinfo");
-    const user = JSON.parse(userInfo)
     const agentAccountAddress = user.accountAddress
     const agentAccountId = user.accountId
     const queryData: requisiteQueryData = {

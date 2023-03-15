@@ -12,8 +12,8 @@ export type decryptionRequestData = {
     sourceUrl: string
     fileId: string
     fileName: string
-    owner: string
-    user: string
+    from: string
+    to: string
 }
 
 export type applyRequestData = {

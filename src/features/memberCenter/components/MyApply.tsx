@@ -152,10 +152,9 @@ export const MyApply = () => {
         sourceUrl: document.domain,
         fileId: record.file_id,
         fileName: record.file_name,
-        owner: '', //TODO record
-        user: '' //TODO
+        from: agentAccountAddress,
+        to: currentRecord.proposer_address
       }
-
       const uuid = await sessionStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){

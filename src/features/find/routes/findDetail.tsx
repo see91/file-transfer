@@ -38,7 +38,7 @@ import {
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
 import { resolveModuleNameFromCache } from "typescript";
-import {applyRequestData} from "@/unlinkagent/types";
+import {applyRequestData, decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 const { Option } = Select;
@@ -77,7 +77,6 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-
     const userInfo = storage.getItem("userinfo");
     const agentAccountAddress = userInfo.accountAddress
     const agentAccountId = userInfo.accountId
@@ -226,30 +225,55 @@ export const FindDetail = () => {
     setIsModalVisible(true);
   };
   const fileDownload = async () => {
-    // TODO
-    const params: ApprovedFileContentByFileIdRequestOptions = {
-      fileId: detailItem.file_id,
-      fileName: detailItem.file_name,
-    };
 
-    if (bUploader) {
-      //file uploader to download
-      const fd = await getContentAsUploaderByFileId(params);
-    } else {
-      //file applicant to download
-      const fd = await getApprovedFileContentByFileId(params);
-      /*     console.log("downlad fd", fd?.length);
-          const blob = new Blob([fd]);
-          const link = document.createElement("a");
-          link.style.display = "none"
-          const href = window.URL.createObjectURL(blob);
-          link.href = href;
-          link.download = detailItem.file_name;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link); */
+    console.log('------------------------------------------')
+
+    debugger
+
+    const userInfo = storage.getItem("userinfo");
+    const agentAccountAddress = userInfo.accountAddress
+    const agentAccountId = userInfo.accountId
+
+    if (agentAccountAddress && agentAccountId){
+      const decryptionRequestData: decryptionRequestData = {
+        accountAddress: agentAccountAddress,
+        accountId: agentAccountId,
+        redirectUrl: document.location.toString(),
+        sourceUrl: document.domain,
+        fileId: detailItem.file_id,
+        fileName: detailItem.file_name,
+        from: agentAccountAddress,
+        to: detailItem.proposer_address
+      }
+      const uuid = await sessionStorage.getItem("uuid")
+      const publicKey = userInfo.publicKey
+      if (uuid && publicKey){
+        const paramData = encodeRequestData(decryptionRequestData, uuid)
+        const key = encodeRequestData(uuid, publicKey)
+        window.open("http://localhost:3000/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      }
+      window.addEventListener("message", authorizationSuccessHandler)
     }
   };
+
+  const authorizationSuccessHandler = async (e) => {
+    const responseData = JSON.parse(e.data)
+    const redirectUrl = responseData.redirectUrl
+    if (responseData && redirectUrl ) {
+      if (responseData.subAction && responseData.subAction == 'relogin') {
+        const userInfo = {
+          accountAddress: responseData.accountAddress,
+          accountId: responseData.accountId,
+          publicKey: responseData.publicKey
+        }
+        storage.setItem(cache_user_key, JSON.stringify(userInfo));
+      }
+      if (responseData.action == 'approve' && responseData.result == 'success') {
+        window.removeEventListener("message", authorizationSuccessHandler)
+        alert("authorization success")
+      }
+    }
+  }
   const IconCom = () => {
     switch (applyStatus) {
       case 0:
@@ -492,7 +516,11 @@ export const FindDetail = () => {
             usageDays: 1,
           }}
           onFinish={async (values: FileApplyOptions) => {
-            await applyForFile(values);
+            if (detailItem.status == 4){
+              await fileDownload()
+            } else {
+              await applyForFile(values);
+            }
             // onSuccess();
           }}
         >
