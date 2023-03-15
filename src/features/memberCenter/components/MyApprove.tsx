@@ -213,7 +213,7 @@ export const MyApprove = () => {
   };
   const approveSubmit = async () => {
 
-    const { applyId } = useWalletParams as UseWalletPayRequestOptions;
+    const { applyId, userAccountId } = useWalletParams as UseWalletPayRequestOptions;
 
     const userInfo = storage.getItem("userinfo");
     const agentAccountAddress = userInfo.accountAddress;
@@ -222,6 +222,7 @@ export const MyApprove = () => {
       const approveParam: approveRequestData = {
         accountAddress: agentAccountAddress,
         accountId: agentAccountId,
+        userAccountId,
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
         from: agentAccountAddress,
