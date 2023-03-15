@@ -42,6 +42,7 @@ import {
 import { approveRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
+import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
 dayjs.extend(utc);
 
 const { TextArea } = Input;
@@ -254,9 +255,12 @@ export const MyApprove = () => {
         alert("Approve Success!")
       }
       if (responseData.subAction && responseData.subAction == 'relogin') {
-        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
-        await sessionStorage.setItem('accountId', responseData.accountId)
-        await sessionStorage.setItem('publicKey', responseData.publicKey)
+        const userInfo = {
+          accountAddress: responseData.accountAddress,
+          accountId: responseData.accountId,
+          publicKey: responseData.publicKey
+        }
+        storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
     }
   }

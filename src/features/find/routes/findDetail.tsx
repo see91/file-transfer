@@ -33,6 +33,7 @@ import { UsePopup } from "@/components/Popup";
 
 import type { FileApplyOptions } from "../types";
 import {
+  cache_user_key,
   getAvatarBase64String,
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
@@ -108,14 +109,17 @@ export const FindDetail = () => {
       const responseData = JSON.parse(e.data)
       const redirectUrl = responseData.redirectUrl
       if (responseData && redirectUrl && redirectUrl == document.location.toString()) {
+        if (responseData.subAction && responseData.subAction == 'relogin') {
+          const userInfo = {
+            accountAddress: responseData.accountAddress,
+            accountId: responseData.accountId,
+            publicKey: responseData.publicKey
+          }
+          storage.setItem(cache_user_key, JSON.stringify(userInfo));
+        }
         if (responseData.action == 'apply' && responseData.result == 'success') {
           window.removeEventListener("message", applySuccessHandler)
           window.location.reload()
-        }
-        if (responseData.subAction && responseData.subAction == 'relogin') {
-          await sessionStorage.setItem('accountAddress', responseData.accountAddress)
-          await sessionStorage.setItem('accountId', responseData.accountId)
-          await sessionStorage.setItem('publicKey', responseData.publicKey)
         }
       }
     }
@@ -143,7 +147,7 @@ export const FindDetail = () => {
     (async (user) => {
       const params: any = {
             file_id: passedFile.file_id,
-            consumer_id: passedFile.owner_id
+            consumer_id: user.accountId
       };
       const result = (await getFileDetail(params)).data;
 
