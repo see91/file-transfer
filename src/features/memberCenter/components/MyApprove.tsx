@@ -39,8 +39,8 @@ import {
   ApplyStatusOfBeingApprovedOrApprovedRequestOptions,
   IsApplyStatusOfBeingApprovedOrApproved,
 } from "@/features/auth/api/applyStatusOfBeingApprovedOrApproved";
-import { approveRequestData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
+import { approveRequestData } from "@/unlinkagent/types";
+import { encodeRequestData } from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 dayjs.extend(utc);
 
@@ -215,51 +215,59 @@ export const MyApprove = () => {
     const { applyId } = useWalletParams as UseWalletPayRequestOptions;
 
     const userInfo = storage.getItem("userinfo");
-    const user = JSON.parse(userInfo)
-    const agentAccountAddress = user.accountAddress
-    const agentAccountId = user.accountId
-    if (agentAccountAddress && agentAccountId){
+    const agentAccountAddress = userInfo.accountAddress;
+    const agentAccountId = userInfo.accountId;
+    if (agentAccountAddress && agentAccountId) {
       const approveParam: approveRequestData = {
-        accountAddress:  agentAccountAddress,
+        accountAddress: agentAccountAddress,
         accountId: agentAccountId,
         redirectUrl: document.location.toString(),
         sourceUrl: document.domain,
         from: agentAccountAddress,
-        to: '', //TODO
+        to: "", //TODO
         applyId: applyId,
-        days: ''
-      }
+        days: "",
+      };
 
-      const uuid = await sessionStorage.getItem("uuid")
-      const publicKey = userInfo.publicKey
-      if (uuid && publicKey){
-        const paramData = encodeRequestData(approveParam, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/approve?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-        window.addEventListener("message", approveSuccessHandler)
+      const uuid = await sessionStorage.getItem("uuid");
+      const publicKey = userInfo.publicKey;
+      console.log(uuid, publicKey);
+      
+      if (uuid && publicKey) {
+        const paramData = encodeRequestData(approveParam, uuid);
+        const key = encodeRequestData(uuid, publicKey);
+        window.open(
+          "http://localhost:3000/approve?from=outside&data=" +
+            encodeURIComponent(paramData) +
+            "&key=" +
+            encodeURIComponent(key),
+        );
+        window.addEventListener("message", approveSuccessHandler);
       }
     } else {
       //TODO turn to unlink agent login page
-      return
+      return;
     }
-
   };
 
   const approveSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data)
-    const redirectUrl = responseData.redirectUrl
+    const responseData = JSON.parse(e.data);
+    const redirectUrl = responseData.redirectUrl;
     if (responseData && redirectUrl) {
-      if (responseData.action == 'approve') {
-        window.removeEventListener("message", approveSuccessHandler)
-        alert("Approve Success!")
+      if (responseData.action == "approve") {
+        window.removeEventListener("message", approveSuccessHandler);
+        alert("Approve Success!");
       }
-      if (responseData.subAction && responseData.subAction == 'relogin') {
-        await sessionStorage.setItem('accountAddress', responseData.accountAddress)
-        await sessionStorage.setItem('accountId', responseData.accountId)
-        await sessionStorage.setItem('publicKey', responseData.publicKey)
+      if (responseData.subAction && responseData.subAction == "relogin") {
+        await sessionStorage.setItem(
+          "accountAddress",
+          responseData.accountAddress,
+        );
+        await sessionStorage.setItem("accountId", responseData.accountId);
+        await sessionStorage.setItem("publicKey", responseData.publicKey);
       }
     }
-  }
+  };
   /**
    * select action
    */
@@ -274,7 +282,7 @@ export const MyApprove = () => {
     // };
     const params: any = {
       file_owner_id: user?.accountId,
-      status: 0,
+      status: 1,
       paginate: {
         page: 1,
         page_size: 10,
@@ -282,7 +290,7 @@ export const MyApprove = () => {
     };
 
     // console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = await getFilesByStatusForAllApplyAsPublisher(params);
+    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params)).data;
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
@@ -304,7 +312,7 @@ export const MyApprove = () => {
       },
     };
     // console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = await getFilesByStatusForAllApplyAsPublisher(params);
+    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params)).data;
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
