@@ -16,18 +16,10 @@ export type FileDetailRequestOptions = {
   fileId: string;
   fileUserAccountId?: string;
 }
-export const getFileList: (args: FileListRequestOptions) => Promise<any> = async (
+export const getFileList: (args: any) => Promise<any> = async (
   data
 ): Promise<FileData> => {
-  const accountID = '913dddef1c97cad769ffab5369cc414f563b703449f84fb54fb6dbce583a2e30'
-  let sendData = {
-    account_id: accountID,
-    paginate: {
-      page: 1,
-      page_size: 50,
-    },
-  };
-  return await axios.post('/file/others-list', sendData)
+  return await axios.post('/file/others-list', data)
   // return await axios.post('/file/list', sendData)
   // return isMock
   //   ? await axios.post('/file/list') //should be file/others-list

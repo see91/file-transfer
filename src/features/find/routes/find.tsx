@@ -17,8 +17,8 @@ import OvalButton from "@/components/Button/OvalButton";
 import CloseButton from "@/components/Button/CloseButton";
 import { Pagination } from "@mui/material";
 import DataIndicators from "../components/DataIndicators";
-import {applyRequestData, requisiteQueryData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
+import { applyRequestData, requisiteQueryData } from "@/unlinkagent/types";
+import { encodeRequestData } from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 
 const { Option } = Select;
@@ -94,9 +94,13 @@ export const Find = () => {
     setSearchValues(values);
     let result = await getFileList({
       ...values,
-      pageSize,
-      pageIndex: 1,
+      account_id: user.accountId,
+      paginate: {
+        page: pageIndex,
+        page_size: pageSize,
+      },
       include: true,
+      desc: true,
     });
     dealWithResultList(result.data);
   };
@@ -148,9 +152,13 @@ export const Find = () => {
     setPageIndex(val);
     let result = await getFileList({
       ...searchValues,
-      pageSize,
-      pageIndex: val,
+      account_id: user.accountId,
+      paginate: {
+        page: val,
+        page_size: pageSize,
+      },
       include: true,
+      desc: true,
     });
     dealWithResultList(result.data);
   };
@@ -223,44 +231,49 @@ export const Find = () => {
 
   const _uploadAction = async () => {
     const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = user.accountAddress
-    const agentAccountId = user.accountId
+    const agentAccountAddress = user.accountAddress;
+    const agentAccountId = user.accountId;
     const queryData: requisiteQueryData = {
       accountAddress: agentAccountAddress,
       accountId: agentAccountId,
       redirectUrl: document.location.toString(),
-      sourceUrl: document.domain
-    }
+      sourceUrl: document.domain,
+    };
 
-    const uuid = await sessionStorage.getItem("uuid")
-    const publicKey = await userInfo.publicKey
+    const uuid = await sessionStorage.getItem("uuid");
+    const publicKey = await userInfo.publicKey;
     if (uuid && publicKey) {
-      const paramData = encodeRequestData(queryData, uuid)
-      const key = encodeRequestData(uuid, publicKey)
-      window.open("http://localhost:3000/upload-file?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+      const paramData = encodeRequestData(queryData, uuid);
+      const key = encodeRequestData(uuid, publicKey);
+      window.open(
+        "http://localhost:3000/upload-file?from=outside&data=" +
+          encodeURIComponent(paramData) +
+          "&key=" +
+          encodeURIComponent(key),
+      );
     } else {
-      window.open("http://localhost:3000/upload-file?from=outside")
+      window.open("http://localhost:3000/upload-file?from=outside");
     }
-    window.addEventListener("message", uploadSuccessHandler)
+    window.addEventListener("message", uploadSuccessHandler);
   };
 
   const uploadSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data)
-    const redirectUrl = responseData.redirectUrl
+    const responseData = JSON.parse(e.data);
+    const redirectUrl = responseData.redirectUrl;
     if (responseData && redirectUrl) {
-      if (responseData.subAction && responseData.subAction == 'relogin') {
+      if (responseData.subAction && responseData.subAction == "relogin") {
         const userInfo = {
           accountAddress: responseData.accountAddress,
           accountId: responseData.accountId,
-          publicKey: responseData.publicKey
-        }
+          publicKey: responseData.publicKey,
+        };
         storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
-      if (responseData.action == 'upload' && responseData.result == 'success') {
-        window.location.reload()
+      if (responseData.action == "upload" && responseData.result == "success") {
+        window.location.reload();
       }
     }
-  }
+  };
 
   const _filterQuery = (key, value) => {
     const keyObj = {

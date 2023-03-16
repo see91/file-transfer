@@ -234,11 +234,6 @@ export const FindDetail = () => {
     setIsModalVisible(true);
   };
   const fileDownload = async () => {
-
-    console.log('------------------------------------------')
-
-    debugger
-
     const userInfo = storage.getItem("userinfo");
     const agentAccountAddress = userInfo.accountAddress
     const agentAccountId = userInfo.accountId
