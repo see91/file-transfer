@@ -154,6 +154,7 @@ export const MyApply = () => {
         fileName: record.file_name,
         from: agentAccountAddress,
         to: currentRecord.proposer_address
+        // to: record.file_owner_address,
       }
       const uuid = await sessionStorage.getItem("uuid")
       const publicKey = userInfo.publicKey

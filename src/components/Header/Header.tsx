@@ -82,11 +82,11 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       console.error(error);
     }
 
-    // console.log("getUserInfo user -------------", !!user);
     if (!!user) {
       setUser(user);
       setLoginUser(user);
-      setIPFSNodeUrl(user.ipfs);
+      setIPFSNodeUrl('/ip4/8.219.11.39/tcp/5001');
+      // setIPFSNodeUrl(user.ipfs);
       setName(user.name);
       //1: login failed //2: login success
       setLoginStatus(2);
