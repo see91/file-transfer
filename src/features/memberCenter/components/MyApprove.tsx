@@ -232,7 +232,7 @@ export const MyApprove = () => {
         remark :currentRecord.remark
       };
 
-      const uuid = await sessionStorage.getItem("uuid");
+      const uuid = await localStorage.getItem("uuid");
       const publicKey = userInfo.publicKey;
       
       if (uuid && publicKey) {

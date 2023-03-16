@@ -240,7 +240,7 @@ export const Find = () => {
       sourceUrl: document.domain,
     };
 
-    const uuid = await sessionStorage.getItem("uuid");
+    const uuid = await localStorage.getItem("uuid");
     const publicKey = await userInfo.publicKey;
     if (uuid && publicKey) {
       const paramData = encodeRequestData(queryData, uuid);

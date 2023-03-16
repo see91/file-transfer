@@ -43,6 +43,8 @@ import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 import {getData} from "@/utils/ipfs";
 const { Option } = Select;
+import { decrypt } from "@/utils/crypto"
+
 
 const btnStyle = {
   width: "150px",
@@ -94,7 +96,7 @@ export const FindDetail = () => {
         days: values.usageDays,
       };
 
-      const uuid = await sessionStorage.getItem("uuid");
+      const uuid = await localStorage.getItem("uuid");
       const publicKey = userInfo.publicKey;
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid);
@@ -250,7 +252,7 @@ export const FindDetail = () => {
         from: agentAccountAddress,
         to: detailItem.proposer_address
       }
-      const uuid = await sessionStorage.getItem("uuid")
+      const uuid = await localStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){
         const paramData = encodeRequestData(decryptionRequestData, uuid)
@@ -275,7 +277,9 @@ export const FindDetail = () => {
       }
       if (responseData.action == 'decrypted' && responseData.result == 'success') {
         if (!!responseData && responseData.url){
-          const arraybuffer = await getData(responseData.url)
+          const uuid = localStorage.getItem("uuid")
+          const decryptUrl = decrypt(responseData.url, uuid)
+          const arraybuffer = await getData(decryptUrl)
           const blob = new Blob([arraybuffer], {type: "arraybuffer"});
           let url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
