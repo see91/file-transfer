@@ -18,6 +18,8 @@ import {decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
+import {decrypt} from "@/utils/crypto";
+import {getData} from "@/utils/ipfs";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -178,9 +180,22 @@ export const MyApply = () => {
         }
         storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
-      if (responseData.action == 'approve' && responseData.result == 'success') {
+      if (responseData.action == 'decrypted' && responseData.result == 'success') {
+        if (!!responseData && responseData.url){
+          const uuid = localStorage.getItem("uuid")
+          const decryptUrl = decrypt(responseData.url, uuid)
+          const arraybuffer = await getData(decryptUrl)
+          const blob = new Blob([arraybuffer], {type: "arraybuffer"});
+          let url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download",responseData.fileName);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
         window.removeEventListener("message", authorizationSuccessHandler)
-        alert("authorization success")
       }
     }
   }
