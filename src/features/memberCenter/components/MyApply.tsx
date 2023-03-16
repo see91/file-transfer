@@ -20,6 +20,7 @@ import storage from "@/utils/storage";
 import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
 import {decrypt} from "@/utils/crypto";
 import {getData} from "@/utils/ipfs";
+import {idID} from "@mui/material/locale";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -155,12 +156,13 @@ export const MyApply = () => {
         fileId: record.file_id,
         fileName: record.file_name,
         from: agentAccountAddress,
-        to: currentRecord.proposer_address
-        // to: record.file_owner_address,
+        to: currentRecord.proposer_address,
+        uuid: ''
       }
       const uuid = await localStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){
+        decryptionRequestData.uuid = uuid
         const paramData = encodeRequestData(decryptionRequestData, uuid)
         const key = encodeRequestData(uuid, publicKey)
         window.open("http://localhost:3000/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
@@ -184,7 +186,7 @@ export const MyApply = () => {
       if (responseData.action == 'decrypted' && responseData.result == 'success') {
         if (!!responseData && responseData.url){
           const uuid = localStorage.getItem("uuid")
-          const decryptUrl = decrypt(responseData.url, uuid)
+          const decryptUrl = decrypt(responseData.url, uuid).replaceAll('"','')
           const arraybuffer = await getData(decryptUrl)
           const blob = new Blob([arraybuffer], {type: "arraybuffer"});
           let url = window.URL.createObjectURL(blob);

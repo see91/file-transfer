@@ -14,6 +14,7 @@ export type decryptionRequestData = {
     fileName: string
     from: string
     to: string
+    uuid: string
 }
 
 export type applyRequestData = {

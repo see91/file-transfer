@@ -250,11 +250,13 @@ export const FindDetail = () => {
         fileId: detailItem.file_id,
         fileName: detailItem.file_name,
         from: agentAccountAddress,
-        to: detailItem.proposer_address
+        to: detailItem.proposer_address,
+        uuid: ''
       }
       const uuid = await localStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){
+        decryptionRequestData.uuid = uuid
         const paramData = encodeRequestData(decryptionRequestData, uuid)
         const key = encodeRequestData(uuid, publicKey)
         window.open("http://localhost:3000/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
@@ -264,7 +266,7 @@ export const FindDetail = () => {
   };
 
   const authorizationSuccessHandler = async (e) => {
-    const responseData = e.data
+    const responseData = JSON.parse(e.data)
     const redirectUrl = responseData.redirectUrl
     if (responseData && redirectUrl ) {
       if (responseData.subAction && responseData.subAction == 'relogin') {
@@ -278,7 +280,7 @@ export const FindDetail = () => {
       if (responseData.action == 'decrypted' && responseData.result == 'success') {
         if (!!responseData && responseData.url){
           const uuid = localStorage.getItem("uuid")
-          const decryptUrl = decrypt(responseData.url, uuid)
+          const decryptUrl = decrypt(responseData.url, uuid).replaceAll('"', '')
           const arraybuffer = await getData(decryptUrl)
           const blob = new Blob([arraybuffer], {type: "arraybuffer"});
           let url = window.URL.createObjectURL(blob);
