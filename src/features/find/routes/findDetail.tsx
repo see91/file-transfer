@@ -41,6 +41,7 @@ import { resolveModuleNameFromCache } from "typescript";
 import {applyRequestData, decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
+import {getData} from "@/utils/ipfs";
 const { Option } = Select;
 
 const btnStyle = {
@@ -261,7 +262,7 @@ export const FindDetail = () => {
   };
 
   const authorizationSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data)
+    const responseData = e.data
     const redirectUrl = responseData.redirectUrl
     if (responseData && redirectUrl ) {
       if (responseData.subAction && responseData.subAction == 'relogin') {
@@ -272,9 +273,20 @@ export const FindDetail = () => {
         }
         storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
-      if (responseData.action == 'approve' && responseData.result == 'success') {
+      if (responseData.action == 'decrypted' && responseData.result == 'success') {
+        if (!!responseData && responseData.url){
+          const arraybuffer = await getData(responseData.url)
+          const blob = new Blob([arraybuffer], {type: "arraybuffer"});
+          let url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download",responseData.fileName);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
         window.removeEventListener("message", authorizationSuccessHandler)
-        alert("authorization success")
       }
     }
   }
