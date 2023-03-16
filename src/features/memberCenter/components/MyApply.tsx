@@ -155,7 +155,7 @@ export const MyApply = () => {
         from: agentAccountAddress,
         to: currentRecord.proposer_address
       }
-      const uuid = await sessionStorage.getItem("uuid")
+      const uuid = await localStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){
         const paramData = encodeRequestData(decryptionRequestData, uuid)

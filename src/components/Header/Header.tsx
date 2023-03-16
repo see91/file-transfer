@@ -36,7 +36,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
   };
   const gotoConnect = async () => {
     const uuid = crypto.randomUUID();
-    await sessionStorage.setItem("uuid", uuid)
+    await localStorage.setItem("uuid", uuid)
     const queryData: requisiteQueryData = {
       accountAddress: "", accountId: "",
       redirectUrl: document.location.toString(),

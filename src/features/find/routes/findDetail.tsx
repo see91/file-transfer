@@ -94,7 +94,7 @@ export const FindDetail = () => {
         days: values.usageDays,
       };
 
-      const uuid = await sessionStorage.getItem("uuid");
+      const uuid = await localStorage.getItem("uuid");
       const publicKey = userInfo.publicKey;
       if (uuid && publicKey) {
         const paramData = encodeRequestData(applyParam, uuid);
@@ -250,7 +250,7 @@ export const FindDetail = () => {
         from: agentAccountAddress,
         to: detailItem.proposer_address
       }
-      const uuid = await sessionStorage.getItem("uuid")
+      const uuid = await localStorage.getItem("uuid")
       const publicKey = userInfo.publicKey
       if (uuid && publicKey){
         const paramData = encodeRequestData(decryptionRequestData, uuid)
