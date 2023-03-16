@@ -140,7 +140,7 @@ export const MyApply = () => {
   const download = async (record) => {
 
     const userInfo = storage.getItem("userinfo");
-    const user = JSON.parse(userInfo)
+    const user = userInfo
     const agentAccountAddress = user.accountAddress
     const agentAccountId = user.accountId
 
