@@ -42,8 +42,9 @@ import {applyRequestData, decryptionRequestData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 import {getData} from "@/utils/ipfs";
-const { Option } = Select;
 import { decrypt } from "@/utils/crypto"
+
+
 
 
 const btnStyle = {
