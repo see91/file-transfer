@@ -36,6 +36,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     setActivityKey(key);
   };
   const gotoConnect = async () => {
+    await localStorage.clear()
     const uuid = uuidv4();
     await localStorage.setItem("uuid", uuid)
     const queryData: requisiteQueryData = {
