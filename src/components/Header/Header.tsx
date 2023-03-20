@@ -19,6 +19,7 @@ import { getUserDetailInfo } from "@/features/auth/api/getLoginedUserInfo";
 import Notice from "./Notice";
 import {requisiteQueryData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
+import { v4 as uuidv4 } from 'uuid'
 
 export const Header = ({ setLoginUser, setLoginStatus }) => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     setActivityKey(key);
   };
   const gotoConnect = async () => {
-    const uuid = crypto.randomUUID();
+    const uuid = uuidv4();
     await localStorage.setItem("uuid", uuid)
     const queryData: requisiteQueryData = {
       accountAddress: "", accountId: "",
