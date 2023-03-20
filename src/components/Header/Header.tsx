@@ -20,6 +20,7 @@ import Notice from "./Notice";
 import {requisiteQueryData} from "@/unlinkagent/types";
 import {encodeRequestData} from "@/unlinkagent/api";
 import { v4 as uuidv4 } from 'uuid'
+import {nulink_agent_config} from "@/unlinkagent/config";
 
 export const Header = ({ setLoginUser, setLoginStatus }) => {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
         window.open("http://localhost:3000?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
     } else {
-      window.open("http://localhost:3000?from=outside&sourceUrl=www.127.0.0.1:8090&redirectUrl=" + document.location.toString())
+      window.open("http://localhost:3000?from=outside&sourceUrl=" + nulink_agent_config.sourceUrl +"&redirectUrl=" + document.location.toString())
     }
     window.addEventListener("message", loginSuccessHandler)
   };
