@@ -246,13 +246,13 @@ export const Find = () => {
       const paramData = encodeRequestData(queryData, uuid);
       const key = encodeRequestData(uuid, publicKey);
       window.open(
-        "http://localhost:3000/upload-file?from=outside&data=" +
+        "http://8.219.11.39/upload-file?from=outside&data=" +
           encodeURIComponent(paramData) +
           "&key=" +
           encodeURIComponent(key),
       );
     } else {
-      window.open("http://localhost:3000/upload-file?from=outside");
+      window.open("http://8.219.11.39/upload-file?from=outside");
     }
     window.addEventListener("message", uploadSuccessHandler);
   };

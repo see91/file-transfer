@@ -239,7 +239,7 @@ export const MyApprove = () => {
         const paramData = encodeRequestData(approveParam, uuid);
         const key = encodeRequestData(uuid, publicKey);
         window.open(
-          "http://localhost:3000/approve?from=outside&data=" +
+          "http://8.219.11.39/approve?from=outside&data=" +
             encodeURIComponent(paramData) +
             "&key=" +
             encodeURIComponent(key),

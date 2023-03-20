@@ -103,7 +103,7 @@ export const FindDetail = () => {
         const paramData = encodeRequestData(applyParam, uuid);
         const key = encodeRequestData(uuid, publicKey);
         window.open(
-          "http://localhost:3000/request-files?from=outside&data=" +
+          "http://8.219.11.39/request-files?from=outside&data=" +
             encodeURIComponent(paramData) +
             "&key=" +
             encodeURIComponent(key),
@@ -260,7 +260,7 @@ export const FindDetail = () => {
         decryptionRequestData.uuid = uuid
         const paramData = encodeRequestData(decryptionRequestData, uuid)
         const key = encodeRequestData(uuid, publicKey)
-        window.open("http://localhost:3000/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
+        window.open("http://8.219.11.39/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
       window.addEventListener("message", authorizationSuccessHandler)
     }
