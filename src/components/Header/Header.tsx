@@ -57,7 +57,9 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
         window.open("http://8.219.11.39?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
       }
     } else {
-      window.open("http://8.219.11.39?from=outside&sourceUrl=" + nulink_agent_config.sourceUrl +"&redirectUrl=" + document.location.toString())
+      if (nulink_agent_config.sourceUrl && document.location.toString()){
+        window.open("http://8.219.11.39?from=outside&sourceUrl=" + encodeURIComponent(nulink_agent_config.sourceUrl) +"&redirectUrl=" + encodeURIComponent(document.location.toString()))
+      }
     }
     window.addEventListener("message", loginSuccessHandler)
   };
