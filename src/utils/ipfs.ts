@@ -60,16 +60,20 @@ export const getIPFSClient = async () => {
 
       client = create(options); //create("/ip4/54.241.67.36/tcp/5001");
     } else {
+      const ipfsUrl = "/ip4/8.219.11.39/tcp/5001";
+      let options: any = { url: ipfsUrl };
       try {
-        client = create({
-          url: "https://ipfs.infura.io:5001",
-          headers: {
-            authorization: pwdDecrypt(
-              "encrypted:0c282750a6f5be15394d171980af6023:8cbdd88a89b74a11cfd8c2a88e0fd4fb045fa83e911058b23894b2f87f2407d45326299618a30682762f5a82ca995f70d0d1cd558d51ac88b7a92656ab6e0d7c2bfef02040df1c23e76b64136d4dc236c6f01e9733e94a293e504cdff027d632c5f60f1befb22b2c75beab3738024e345c9e72f6d589fa7de775d36e0d99e0cdy9Zxst06",
-              false,
-            ),
-          },
-        });
+        client = create(options); //create("/ip4/54.241.67.36/tcp/5001");
+        // client = create({
+        //   url: ipfsUrl,
+        //   // url: "https://ipfs.infura.io:5001",
+        //   headers: {
+        //     authorization: pwdDecrypt(
+        //       "encrypted:0c282750a6f5be15394d171980af6023:8cbdd88a89b74a11cfd8c2a88e0fd4fb045fa83e911058b23894b2f87f2407d45326299618a30682762f5a82ca995f70d0d1cd558d51ac88b7a92656ab6e0d7c2bfef02040df1c23e76b64136d4dc236c6f01e9733e94a293e504cdff027d632c5f60f1befb22b2c75beab3738024e345c9e72f6d589fa7de775d36e0d99e0cdy9Zxst06",
+        //       false,
+        //     ),
+        //   },
+        // });
       } catch (error: any) {
         client = create({
           host: "filetransfer.nulink.org",
