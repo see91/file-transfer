@@ -1,32 +1,31 @@
+
+
 export type requisiteQueryData = {
     accountAddress: string | null
     accountId: string | null
     redirectUrl: string
-    sourceUrl: string
 }
 
 export type decryptionRequestData = {
     accountAddress: string
     accountId: string
     redirectUrl: string
-    sourceUrl: string
     fileId: string
     fileName: string
     from: string
     to: string
-    uuid: string
+    publicKey: string
 }
 
 export type applyRequestData = {
     accountAddress: string
     accountId: string
     redirectUrl: string
-    sourceUrl: string
     fileName: string
     fileId: string
     owner: string
     user: string
-    days: string
+    days: number
 }
 
 export type approveRequestData = {
@@ -106,4 +105,12 @@ export type decryptionResponseData = {
     fileId: string
     result: string
     redirectUrl: string
+}
+
+
+export type ApplyInfo = {
+    fileName: string
+    fileId: string
+    fileCreatorAddress: string
+    usageDays: number
 }

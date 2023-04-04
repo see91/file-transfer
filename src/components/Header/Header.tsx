@@ -18,7 +18,7 @@ import { USERINFO_UPDATE } from "@/lib/emitter-events";
 import { getUserDetailInfo } from "@/features/auth/api/getLoginedUserInfo";
 import Notice from "./Notice";
 import {requisiteQueryData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
+import {connect, encodeRequestData} from "@/unlinkagent/api";
 import { v4 as uuidv4 } from 'uuid'
 import {nulink_agent_config} from "@/unlinkagent/config";
 
@@ -37,41 +37,16 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     setActivityKey(key);
   };
   const gotoConnect = async () => {
-    await localStorage.clear()
-    const uuid = uuidv4();
-    await localStorage.setItem("uuid", uuid)
-    const queryData: requisiteQueryData = {
-      accountAddress: "", accountId: "",
-      redirectUrl: document.location.toString(),
-      sourceUrl: document.domain
-    }
-    const userInfo = storage.getItem("userinfo");
-    if (userInfo){
-      const user = JSON.parse(userInfo)
-      queryData.accountAddress = user.accountAddress
-      queryData.accountId = user.accountAddress
-      const publicKey = user.publicKey
-      if (publicKey) {
-        const paramData = encodeRequestData(queryData, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://8.219.11.39?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-      }
-    } else {
-      if (nulink_agent_config.sourceUrl && document.location.toString()){
-        window.open("http://8.219.11.39?from=outside&sourceUrl=" + encodeURIComponent(nulink_agent_config.sourceUrl) +"&redirectUrl=" + encodeURIComponent(document.location.toString()))
-      }
-    }
-    window.addEventListener("message", loginSuccessHandler)
+    await connect()
   };
 
   const loginSuccessHandler = async (e) => {
-      const date = JSON.parse(e.data)
+      const date = e.data
       const redirectUrl = date.redirectUrl
       if (date && redirectUrl /*&& redirectUrl == document.location.toString()*/) {
         if (date.action == 'login' && date.result == 'success') {
           storage.setItem(cache_user_key, date);
           window.removeEventListener("message", loginSuccessHandler)
-          window.location.reload()
         }
       }
   }

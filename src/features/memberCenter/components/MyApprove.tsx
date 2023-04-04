@@ -35,14 +35,10 @@ import {
 } from "@/features/auth/api/useWalletPay";
 import { UsePopup } from "@/components/Popup";
 import Alert from "@/components/Layout/Alert";
-import {
-  ApplyStatusOfBeingApprovedOrApprovedRequestOptions,
-  IsApplyStatusOfBeingApprovedOrApproved,
-} from "@/features/auth/api/applyStatusOfBeingApprovedOrApproved";
-import { approveRequestData } from "@/unlinkagent/types";
-import { encodeRequestData } from "@/unlinkagent/api";
 import storage from "@/utils/storage";
 import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
+import { approve } from "@/unlinkagent/api";
+
 dayjs.extend(utc);
 
 const { TextArea } = Input;
@@ -212,44 +208,8 @@ export const MyApprove = () => {
     setOpen(false);
   };
   const approveSubmit = async () => {
-
     const { applyId, userAccountId } = useWalletParams as UseWalletPayRequestOptions;
-
-    const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = userInfo.accountAddress;
-    const agentAccountId = userInfo.accountId;
-    if (agentAccountAddress && agentAccountId) {
-      const approveParam: approveRequestData = {
-        accountAddress: agentAccountAddress,
-        accountId: agentAccountId,
-        userAccountId,
-        redirectUrl: document.location.toString(),
-        sourceUrl: document.domain,
-        from: agentAccountAddress,
-        to: currentRecord.proposer_address,
-        applyId: applyId,
-        days: currentRecord.days,
-        remark :currentRecord.remark
-      };
-
-      const uuid = await localStorage.getItem("uuid");
-      const publicKey = userInfo.publicKey;
-      
-      if (uuid && publicKey) {
-        const paramData = encodeRequestData(approveParam, uuid);
-        const key = encodeRequestData(uuid, publicKey);
-        window.open(
-          "http://8.219.11.39/approve?from=outside&data=" +
-            encodeURIComponent(paramData) +
-            "&key=" +
-            encodeURIComponent(key),
-        );
-        window.addEventListener("message", approveSuccessHandler);
-      }
-    } else {
-      //TODO turn to unlink agent login page
-      return;
-    }
+    await approve(applyId, userAccountId, currentRecord)
   };
 
   const approveSuccessHandler = async (e) => {

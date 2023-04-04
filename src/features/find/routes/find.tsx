@@ -18,8 +18,9 @@ import CloseButton from "@/components/Button/CloseButton";
 import { Pagination } from "@mui/material";
 import DataIndicators from "../components/DataIndicators";
 import { applyRequestData, requisiteQueryData } from "@/unlinkagent/types";
-import { encodeRequestData } from "@/unlinkagent/api";
+import {encodeRequestData, upload} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
+import {nulink_agent_config} from "@/unlinkagent/config";
 
 const { Option } = Select;
 const formItemStyle = {
@@ -230,31 +231,7 @@ export const Find = () => {
   };
 
   const _uploadAction = async () => {
-    const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = user.accountAddress;
-    const agentAccountId = user.accountId;
-    const queryData: requisiteQueryData = {
-      accountAddress: agentAccountAddress,
-      accountId: agentAccountId,
-      redirectUrl: document.location.toString(),
-      sourceUrl: document.domain,
-    };
-
-    const uuid = await localStorage.getItem("uuid");
-    const publicKey = await userInfo.publicKey;
-    if (uuid && publicKey) {
-      const paramData = encodeRequestData(queryData, uuid);
-      const key = encodeRequestData(uuid, publicKey);
-      window.open(
-        "http://8.219.11.39/upload-file?from=outside&data=" +
-          encodeURIComponent(paramData) +
-          "&key=" +
-          encodeURIComponent(key),
-      );
-    } else {
-      window.open("http://8.219.11.39/upload-file?from=outside");
-    }
-    window.addEventListener("message", uploadSuccessHandler);
+   await upload()
   };
 
   const uploadSuccessHandler = async (e) => {

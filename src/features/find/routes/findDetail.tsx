@@ -37,15 +37,9 @@ import {
   getAvatarBase64String,
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
-import { resolveModuleNameFromCache } from "typescript";
-import {applyRequestData, decryptionRequestData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
+import {apply, ApplyInfo, encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
-import {getData} from "@/utils/ipfs";
-import { decrypt } from "@/utils/crypto"
-
-
-
+import { download } from "@/unlinkagent/api";
 
 const btnStyle = {
   width: "150px",
@@ -81,39 +75,16 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-    const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = userInfo.accountAddress;
-    const agentAccountId = userInfo.accountId;
-    if (agentAccountAddress && agentAccountId) {
-      const applyParam: applyRequestData = {
-        accountAddress: agentAccountAddress,
-        accountId: agentAccountId,
-        redirectUrl: document.location.toString(),
-        sourceUrl: document.domain,
-        fileName: detailItem.file_name,
-        fileId: detailItem.file_id,
-        owner: detailItem.creator_address,
-        user: userInfo.accountAddress,
-        days: values.usageDays,
-      };
-
-      const uuid = await localStorage.getItem("uuid");
-      const publicKey = userInfo.publicKey;
-      if (uuid && publicKey) {
-        const paramData = encodeRequestData(applyParam, uuid);
-        const key = encodeRequestData(uuid, publicKey);
-        window.open(
-          "http://8.219.11.39/request-files?from=outside&data=" +
-            encodeURIComponent(paramData) +
-            "&key=" +
-            encodeURIComponent(key),
-        );
-        window.addEventListener("message", applySuccessHandler);
-      }
+    const applyInfo:ApplyInfo = {
+      fileCreatorAddress: detailItem.creator_address,
+      fileId: detailItem.file_id,
+      fileName: detailItem.file_name,
+      usageDays: values.usageDays
     }
+    await apply(applyInfo)
   };
 
-  const applySuccessHandler = async (e) => {
+  /*const applySuccessHandler = async (e) => {
     const responseData = JSON.parse(e.data);
     const redirectUrl = responseData.redirectUrl;
     if (
@@ -134,7 +105,7 @@ export const FindDetail = () => {
         window.location.reload();
       }
     }
-  };
+  };*/
 
   const _getFileDetail = async () => {
     const user = getUserCache();
@@ -238,65 +209,9 @@ export const FindDetail = () => {
     setIsModalVisible(true);
   };
   const fileDownload = async () => {
-    const userInfo = storage.getItem("userinfo");
-    const agentAccountAddress = userInfo.accountAddress
-    const agentAccountId = userInfo.accountId
-
-    if (agentAccountAddress && agentAccountId){
-      const decryptionRequestData: decryptionRequestData = {
-        accountAddress: agentAccountAddress,
-        accountId: agentAccountId,
-        redirectUrl: document.location.toString(),
-        sourceUrl: document.domain,
-        fileId: detailItem.file_id,
-        fileName: detailItem.file_name,
-        from: agentAccountAddress,
-        to: detailItem.proposer_address,
-        uuid: ''
-      }
-      const uuid = await localStorage.getItem("uuid")
-      const publicKey = userInfo.publicKey
-      if (uuid && publicKey){
-        decryptionRequestData.uuid = uuid
-        const paramData = encodeRequestData(decryptionRequestData, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://8.219.11.39/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-      }
-      window.addEventListener("message", authorizationSuccessHandler)
-    }
+    await download(detailItem)
   };
 
-  const authorizationSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data)
-    const redirectUrl = responseData.redirectUrl
-    if (responseData && redirectUrl ) {
-      if (responseData.subAction && responseData.subAction == 'relogin') {
-        const userInfo = {
-          accountAddress: responseData.accountAddress,
-          accountId: responseData.accountId,
-          publicKey: responseData.publicKey
-        }
-        storage.setItem(cache_user_key, JSON.stringify(userInfo));
-      }
-      if (responseData.action == 'decrypted' && responseData.result == 'success') {
-        if (!!responseData && responseData.url){
-          const uuid = localStorage.getItem("uuid")
-          const decryptUrl = decrypt(responseData.url, uuid).replaceAll('"', '')
-          const arraybuffer = await getData(decryptUrl)
-          const blob = new Blob([arraybuffer], {type: "arraybuffer"});
-          let url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.style.display = "none";
-          link.href = url;
-          link.setAttribute("download",responseData.fileName);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-        window.removeEventListener("message", authorizationSuccessHandler)
-      }
-    }
-  }
   const IconCom = () => {
     switch (applyStatus) {
       case 0:

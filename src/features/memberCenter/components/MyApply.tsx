@@ -20,7 +20,7 @@ import storage from "@/utils/storage";
 import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
 import {decrypt} from "@/utils/crypto";
 import {getData} from "@/utils/ipfs";
-import {idID} from "@mui/material/locale";
+import {download as fileDownload} from "@/unlinkagent/api";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -141,34 +141,8 @@ export const MyApply = () => {
   ];
 
   const download = async (record) => {
-
-    const userInfo = storage.getItem("userinfo");
-    const user = userInfo
-    const agentAccountAddress = user.accountAddress
-    const agentAccountId = user.accountId
-
-    if (agentAccountAddress && agentAccountId){
-      const decryptionRequestData: decryptionRequestData = {
-        accountAddress: agentAccountAddress,
-        accountId: agentAccountId,
-        redirectUrl: document.location.toString(),
-        sourceUrl: document.domain,
-        fileId: record.file_id,
-        fileName: record.file_name,
-        from: agentAccountAddress,
-        to: currentRecord.proposer_address,
-        uuid: ''
-      }
-      const uuid = await localStorage.getItem("uuid")
-      const publicKey = userInfo.publicKey
-      if (uuid && publicKey){
-        decryptionRequestData.uuid = uuid
-        const paramData = encodeRequestData(decryptionRequestData, uuid)
-        const key = encodeRequestData(uuid, publicKey)
-        window.open("http://8.219.11.39/request-authorization?from=outside&data=" + encodeURIComponent(paramData) + "&key=" + encodeURIComponent(key))
-      }
-      window.addEventListener("message", authorizationSuccessHandler)
-    }
+    record.proposer_address = currentRecord.proposer_address
+    await fileDownload(record)
   };
 
   const authorizationSuccessHandler = async (e) => {
