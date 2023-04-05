@@ -2,7 +2,7 @@ import {nulink_agent_config} from "@/unlinkagent/config";
 import storage from "../../utils/storage";
 import {ApplyInfo, applyRequestData, approveRequestData, decryptionRequestData, requisiteQueryData} from "../types";
 import {getData} from "../../utils/ipfs";
-import {getKeyPair, privateKeyDecrypt} from "@/unlinkagent/api/rsautil";
+import {getKeyPair, privateKeyDecrypt, publicKeyEncrypt} from "@/unlinkagent/api/rsautil";
 import {encrypt, decrypt} from "@/unlinkagent/api/passwordEncryption";
 import { decrypt as aesDecryt } from "@/utils/crypto";
 
@@ -135,6 +135,7 @@ const approveSuccessHandler = async (e) => {
         if (responseData.action == "approve") {
             window.removeEventListener("message", approveSuccessHandler);
             alert("Approve Success!");
+            window.location.reload();
         }
     }
 };
@@ -170,21 +171,24 @@ const authorizationSuccessHandler = async (e) => {
         const responseData = e.data
         const encryptedKeypair = await localStorage.getItem('encryptedKeypair')
         if (!!encryptedKeypair){
-            const keypair = decrypt(encryptedKeypair)
+            const keypair = JSON.parse(decrypt(encryptedKeypair))
             const _privateKey = keypair.privateKey
+            const _publicKey = keypair.publicKey
+            const ciphertext = publicKeyEncrypt(_publicKey, 'qwerty')
+            const plaintext = privateKeyDecrypt(_privateKey, ciphertext)
             const secret = privateKeyDecrypt(_privateKey, responseData.key)
             const response = JSON.parse(aesDecryt(responseData.data, secret))
             if (response) {
                 await checkReLogin(response)
                 if (response.action == 'decrypted' && response.result == 'success') {
                     if (!!response && response.url){
-                        const arraybuffer = await getData(response.url)
+                        const arraybuffer = await getData(decodeURIComponent(response.url))
                         const blob = new Blob([arraybuffer], {type: "arraybuffer"});
                         let url = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
                         link.style.display = "none";
                         link.href = url;
-                        link.setAttribute("download",responseData.fileName);
+                        link.setAttribute("download",response.fileName);
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
