@@ -289,7 +289,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
             {t<string>("header-a-btn-2")}
           </div>
         )}
-        <Notice />
+        {/* <Notice /> */}
       </div>
     </div>
   );

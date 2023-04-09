@@ -186,13 +186,13 @@ export const MemberCenter = () => {
             <div className="member_introduction">
               <div className="member_introduction_name">
                 <span>{user?.name}</span>
-                <OvalButton
+                {/* <OvalButton
                   title={editTitle()}
                   style={{ marginLeft: "10px" }}
                   onClick={() => {
                     navigate("/modifyData");
                   }}
-                />
+                /> */}
                 {/* <ul className="ranking_area">
                   {userDetailInfo?.ranking &&
                     userDetailInfo?.ranking.length > 0 &&
@@ -217,7 +217,7 @@ export const MemberCenter = () => {
               {/* <div className="member_introduction_text">
                 {userDetailInfo?.profile || t("member-center-introduce")}
               </div> */}
-              <div className="member_social">
+              {/* <div className="member_social">
                 <div className="share_page" onClick={_share}>
                   <svg
                     width="20"
@@ -312,7 +312,7 @@ export const MemberCenter = () => {
                     </svg>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="member_center_right">
