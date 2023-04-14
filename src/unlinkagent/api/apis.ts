@@ -9,7 +9,7 @@ import { decrypt as aesDecryt } from "@/utils/crypto";
 export const cache_user_key: string = "userinfo";
 
 export const connect = async () => {
-    window.open(nulink_agent_config.address + "?redirectUrl=" + document.location.toString())
+    window.open(nulink_agent_config.address + "?from=outside&redirectUrl=" + document.location.toString())
     window.addEventListener("message", loginSuccessHandler)
 }
 
