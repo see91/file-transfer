@@ -21,7 +21,7 @@ export const getUserCache = (showMessage: boolean = true) => {
 
   if (!userInfo) {
     if (showMessage) {
-      Message.warn("please login nulink-agent first 2222222222");
+      // Message.warn("please login nulink-agent first 2222222222");
     }
 
     return null;
@@ -58,7 +58,7 @@ export const getUserDetailCache = (showMessage: boolean = true) => {
 
   if (!userInfo) {
     if (showMessage) {
-      Message.warn("please login nulink-agent first  3333333333333");
+      // Message.warn("please login nulink-agent first  3333333333333");
     }
 
     return null;

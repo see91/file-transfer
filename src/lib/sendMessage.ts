@@ -76,7 +76,7 @@ export const sendMessageSync = (caller = "", data: Record<string, any>) => {
             if (errorInfo?.code === 401) {
               //TODO: wake up agent login page or create wallet page
               // Message.destroy();
-              Message.warn("please login nulink-agent first 111111111");
+              // Message.warn("please login nulink-agent first 111111111");
             } else {
               // Message.destroy();
               Message.error(
