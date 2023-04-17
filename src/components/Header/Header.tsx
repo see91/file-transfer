@@ -5,7 +5,7 @@ import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultAvatarImage } from "@/utils/defaultImage";
-import { cache_user_key } from '@/features/auth/api/getLoginedUserInfo'
+import { cache_user_key } from "@/features/auth/api/getLoginedUserInfo";
 
 import {
   getAvatarBase64String,
@@ -16,11 +16,7 @@ import { repeatInterval } from "@/utils/repeatInterval";
 import Emitter from "@/lib/emitter";
 import { USERINFO_UPDATE } from "@/lib/emitter-events";
 import { getUserDetailInfo } from "@/features/auth/api/getLoginedUserInfo";
-import Notice from "./Notice";
-import {requisiteQueryData} from "@/unlinkagent/types";
-import {connect, encodeRequestData} from "@/unlinkagent/api";
-import { v4 as uuidv4 } from 'uuid'
-import {nulink_agent_config} from "@/unlinkagent/config";
+import { connect } from "@/unlinkagent/api";
 
 export const Header = ({ setLoginUser, setLoginStatus }) => {
   const { t } = useTranslation();
@@ -37,22 +33,21 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     setActivityKey(key);
   };
   const gotoConnect = async () => {
-    await connect()
+    await connect();
   };
 
   const loginSuccessHandler = async (e) => {
-      const date = e.data
-      const redirectUrl = date.redirectUrl
-      if (date && redirectUrl /*&& redirectUrl == document.location.toString()*/) {
-        if (date.action == 'login' && date.result == 'success') {
-          storage.setItem(cache_user_key, date);
-          window.removeEventListener("message", loginSuccessHandler)
-        }
+    const date = e.data;
+    const redirectUrl = date.redirectUrl;
+    if (date && redirectUrl) {
+      if (date.action == "login" && date.result == "success") {
+        storage.setItem(cache_user_key, date);
+        window.removeEventListener("message", loginSuccessHandler);
       }
-  }
+    }
+  };
 
   const fetchUserInfo = async () => {
-    // console.log("fetchUserInfo -------------");
     let user;
     try {
       user = await getUserInfo();
@@ -65,10 +60,8 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     if (!!user) {
       setUser(user);
       setLoginUser(user);
-      setIPFSNodeUrl('/ip4/8.219.11.39/tcp/5001');
-      // setIPFSNodeUrl(user.ipfs);
+      setIPFSNodeUrl("/ip4/8.219.11.39/tcp/5001");
       setName(user.name);
-      //1: login failed //2: login success
       setLoginStatus(2);
 
       const userDetailInfo = await getUserDetailInfo();
@@ -81,11 +74,15 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     } else {
       setUser(null);
       setLoginUser(null);
-      //1: login failed //2: login success
       setLoginStatus(1);
     }
 
     return user;
+  };
+
+  const _logout = () => {
+    window.localStorage.clear();
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -107,7 +104,6 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       await fetchUserInfo();
     });
 
-    console.log("header.tsx useEffect -------------");
     repeatInterval(async () => await fetchUserInfo(), {
       repeatNumber: 5,
     });
@@ -115,7 +111,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
     return () => {
       Emitter.off(USERINFO_UPDATE, () => {});
     };
-  }, []); //remove [navigate], when it url changed,  don't reload the header => don't reload the user unless you refresh the page with F5
+  }, []);
 
   return (
     <div className="header">
@@ -241,55 +237,31 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
           {t<string>("header-a-tab-1")}
           <div className="line"></div>
         </div>
-        {/* <div
-          className={activityKey === "faucet" ? "activity" : ""}
-          onClick={() => tabClick("faucet")}
-        >
-          {t<string>("header-a-tab-3")}
-          <div className="line"></div>
-        </div> */}
-        {/* <div
-          className={activityKey === "ranking-list" ? "activity" : ""}
-          onClick={() => tabClick("ranking-list")}
-        >
-          {t<string>("header-a-tab-4")}
-          <div className="line"></div>
-        </div> */}
-        {/* <div
-          className={activityKey === "2" ? "activity" : ""}
-          onClick={() => tabClick("2")}
-        >
-          {t<string>("header-a-tab-2")}
-          <div className="line"></div>
-        </div> */}
-        {/* Removed language switching (internationalization support) */}
-        {/* <div className="flex_row">
-          <GlobalOutlined
-            style={{ fontSize: "20px", color: "#eee", marginRight: "8px" }}
-          />
-          {t<string>("header-a-btn-1")}
-        </div> */}
         {user ? (
-          <div
-            className="user_box flex_row"
-            onClick={() => {
-              navigate("/memberCenter");
-            }}
-          >
-            {name}
-            <div className="user_img">
-              <div
-                className="user_img_item"
-                style={{ background: `url(${avatar})` }}
-              />
+          <>
+            <div
+              className="user_box flex_row"
+              onClick={() => {
+                navigate("/memberCenter");
+              }}
+            >
+              {name}
+              <div className="user_img">
+                <div
+                  className="user_img_item"
+                  style={{ background: `url(${avatar})` }}
+                />
+              </div>
             </div>
-          </div>
+            <div className="tab_btn" onClick={_logout}>
+              Logout
+            </div>
+          </>
         ) : (
           <div className="tab_btn" onClick={gotoConnect}>
             {t<string>("header-a-btn-2")}
           </div>
         )}
-        {/* <Notice /> */}
       </div>
     </div>
   );
