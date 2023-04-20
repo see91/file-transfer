@@ -11,7 +11,44 @@ export const cache_user_key: string = "userinfo";
 export const connect = async () => {
     window.open(nulink_agent_config.address + "?from=outside&redirectUrl=" + document.location.toString())
     window.addEventListener("message", loginSuccessHandler)
+   //demo callback example
+   /*  window.addEventListener("message", loginSuccessHandler1( async (data) => { 
+        console.log("success 这里执行用户成功的操作")
+        await storage.setItem(cache_user_key, data);
+        window.removeEventListener("message", loginSuccessHandler)
+        window.location.reload()
+    },
+    async (data) => {
+        console.log("failed 这里执行用户失败的操作")
+        }
+)) */
+
 }
+
+/* type CallBackFun =  ( msg :any ) => Promise<void>;
+
+
+const loginSuccessHandler1 = (callBackFuncSuccess: CallBackFun, callBackFuncError: CallBackFun) => {
+ 
+    return async (e) => {
+        const data = e.data
+        if (data) {
+            if (data.action === 'login' && data.result === 'success') {
+
+                await callBackFuncSuccess(data);
+                // await storage.setItem(cache_user_key, date);
+                // window.removeEventListener("message", loginSuccessHandler)
+                // window.location.reload()
+            }
+            else{
+                await callBackFuncError(data);
+            }
+        }
+    }
+} */
+
+
+
 
 const loginSuccessHandler = async (e) => {
     const date = e.data
