@@ -195,7 +195,7 @@ export const download = async (detailItem) => {
             fileId: detailItem.file_id,
             fileName: detailItem.file_name,
             from: agentAccountAddress,
-            to: detailItem.proposer_address,
+            to: detailItem.file_owner_address,
             publicKey: publicKey
         }
         window.open(nulink_agent_config.address + "/request-authorization?from=outside&data=" + encodeURIComponent(JSON.stringify(decryptionRequestData)))
