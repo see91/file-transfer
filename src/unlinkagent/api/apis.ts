@@ -9,7 +9,7 @@ import { decrypt as aesDecryt } from "@/utils/crypto";
 export const cache_user_key: string = "userinfo";
 
 export const connect = async () => {
-    window.open(nulink_agent_config.address + "?from=outside&redirectUrl=" + document.location.toString())
+    window.open(nulink_agent_config.address + "/guide?from=outside&redirectUrl=" + document.location.toString())
     window.addEventListener("message", loginSuccessHandler)
    //demo callback example
    /*  window.addEventListener("message", loginSuccessHandler1( async (data) => { 
@@ -210,9 +210,6 @@ const authorizationSuccessHandler = async (e) => {
         if (!!encryptedKeypair){
             const keypair = JSON.parse(decrypt(encryptedKeypair))
             const _privateKey = keypair.privateKey
-            const _publicKey = keypair.publicKey
-            const ciphertext = publicKeyEncrypt(_publicKey, 'qwerty')
-            const plaintext = privateKeyDecrypt(_privateKey, ciphertext)
             const secret = privateKeyDecrypt(_privateKey, responseData.key)
             const response = JSON.parse(aesDecryt(responseData.data, secret))
             if (response) {
