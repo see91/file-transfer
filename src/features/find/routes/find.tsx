@@ -33,7 +33,6 @@ export const Find = () => {
   const pageSize = 12;
   const [pageIndex, setPageIndex] = useState(1);
   const { t } = useTranslation();
-  const [form] = Form.useForm();
   const navigate = useNavigate();
   const [searchValues, setSearchValues] = useState({});
   const [user, setUser] = useState<any>(null);
@@ -42,8 +41,8 @@ export const Find = () => {
   const [fileCategory, setFileCategory] = useState<any>([]);
   const [fileType, setFileType] = useState<any>(undefined);
 
-  const [fileName, setFileName] = useState<string>("");
-  const [descOrder, setDescOrder] = useState<boolean>(true);
+  const [fileName] = useState<string>("");
+  const [descOrder] = useState<boolean>(true);
 
   const toFindDetail = (fileDetail, user) => {
     navigate("/findDetail", { state: { file: fileDetail, user: user } });
@@ -188,7 +187,7 @@ export const Find = () => {
       <div className="find_page_content">
         <Row>
           {resultList.length > 0 &&
-            resultList.map((file: any, index) => (
+            resultList.map((file: any) => (
               <div className="content_box" key={file.file_id}>
                 {!file.useThumbnailBase64 ? (
                   <div
@@ -237,12 +236,7 @@ export const Find = () => {
                   </div>
                 </div>
                 <div className="content_box_bottom">
-                  <div
-                    className="content_box_bottom_left"
-                    onClick={() => {
-                      navigate(`/creator/${file.owner_id}`);
-                    }}
-                  >
+                  <div className="content_box_bottom_left">
                     <img
                       src={file.owner_avatar || defaultAvatarImage}
                       alt="avatar"

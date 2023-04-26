@@ -1,9 +1,9 @@
-import {nulink_agent_config} from "@/unlinkagent/config";
+import { nulink_agent_config } from "@/unlinkagent/config";
 import storage from "../../utils/storage";
-import {ApplyInfo, applyRequestData, approveRequestData, decryptionRequestData, requisiteQueryData} from "../types";
-import {getData} from "../../utils/ipfs";
-import {getKeyPair, privateKeyDecrypt, publicKeyEncrypt} from "@/unlinkagent/api/rsautil";
-import {encrypt, decrypt} from "@/unlinkagent/api/passwordEncryption";
+import { ApplyInfo, applyRequestData, approveRequestData, decryptionRequestData, requisiteQueryData } from "../types";
+import { getData } from "../../utils/ipfs";
+import { getKeyPair, privateKeyDecrypt } from "@/unlinkagent/api/rsautil";
+import { encrypt, decrypt } from "@/unlinkagent/api/passwordEncryption";
 import { decrypt as aesDecryt } from "@/utils/crypto";
 
 export const cache_user_key: string = "userinfo";
@@ -11,44 +11,7 @@ export const cache_user_key: string = "userinfo";
 export const connect = async () => {
     window.open(nulink_agent_config.address + "/guide?from=outside&redirectUrl=" + document.location.toString())
     window.addEventListener("message", loginSuccessHandler)
-   //demo callback example
-   /*  window.addEventListener("message", loginSuccessHandler1( async (data) => { 
-        console.log("success 这里执行用户成功的操作")
-        await storage.setItem(cache_user_key, data);
-        window.removeEventListener("message", loginSuccessHandler)
-        window.location.reload()
-    },
-    async (data) => {
-        console.log("failed 这里执行用户失败的操作")
-        }
-)) */
-
 }
-
-/* type CallBackFun =  ( msg :any ) => Promise<void>;
-
-
-const loginSuccessHandler1 = (callBackFuncSuccess: CallBackFun, callBackFuncError: CallBackFun) => {
- 
-    return async (e) => {
-        const data = e.data
-        if (data) {
-            if (data.action === 'login' && data.result === 'success') {
-
-                await callBackFuncSuccess(data);
-                // await storage.setItem(cache_user_key, date);
-                // window.removeEventListener("message", loginSuccessHandler)
-                // window.location.reload()
-            }
-            else{
-                await callBackFuncError(data);
-            }
-        }
-    }
-} */
-
-
-
 
 const loginSuccessHandler = async (e) => {
     const date = e.data
@@ -73,7 +36,7 @@ export const checkReLogin = async (responseData) => {
 
 export const upload = async () => {
     const userInfo = await storage.getItem(cache_user_key);
-    if (!!userInfo){
+    if (!!userInfo) {
         const queryData: requisiteQueryData = {
             accountAddress: userInfo.accountAddress,
             accountId: userInfo.accountId,
@@ -150,7 +113,7 @@ export const approve = async (applyId, userAccountId, currentRecord) => {
             to: currentRecord.proposer_address,
             applyId: applyId,
             days: currentRecord.days,
-            remark :currentRecord.remark
+            remark: currentRecord.remark
         };
 
         window.open(
@@ -187,7 +150,7 @@ export const download = async (detailItem) => {
     const agentAccountAddress = userInfo.accountAddress
     const agentAccountId = userInfo.accountId
 
-    if (agentAccountAddress && agentAccountId){
+    if (agentAccountAddress && agentAccountId) {
         const decryptionRequestData: decryptionRequestData = {
             accountAddress: agentAccountAddress,
             accountId: agentAccountId,
@@ -207,7 +170,7 @@ const authorizationSuccessHandler = async (e) => {
     try {
         const responseData = e.data
         const encryptedKeypair = await localStorage.getItem('encryptedKeypair')
-        if (!!encryptedKeypair){
+        if (!!encryptedKeypair) {
             const keypair = JSON.parse(decrypt(encryptedKeypair))
             const _privateKey = keypair.privateKey
             const secret = privateKeyDecrypt(_privateKey, responseData.key)
@@ -215,14 +178,14 @@ const authorizationSuccessHandler = async (e) => {
             if (response) {
                 await checkReLogin(response)
                 if (response.action == 'decrypted' && response.result == 'success') {
-                    if (!!response && response.url){
+                    if (!!response && response.url) {
                         const arraybuffer = await getData(decodeURIComponent(response.url))
-                        const blob = new Blob([arraybuffer], {type: "arraybuffer"});
+                        const blob = new Blob([arraybuffer], { type: "arraybuffer" });
                         let url = window.URL.createObjectURL(blob);
                         const link = document.createElement("a");
                         link.style.display = "none";
                         link.href = url;
-                        link.setAttribute("download",response.fileName);
+                        link.setAttribute("download", response.fileName);
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
@@ -233,7 +196,7 @@ const authorizationSuccessHandler = async (e) => {
         } else {
             throw new Error("Key pair does not exist")
         }
-    } catch (error){
+    } catch (error) {
         throw new Error("Decryption failed, Please try again")
     }
 }

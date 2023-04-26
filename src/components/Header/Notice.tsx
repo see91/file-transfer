@@ -2,43 +2,10 @@ import { useNavigate } from "react-router-dom";
 import "@/assets/style/notice.less";
 import { getUnreadTotal } from "./api/notice";
 import { useEffect, useState } from "react";
-import { getUserCache, getUserDetailCache } from "@/features/auth/api/getLoginedUserInfo";
 
 const Notice = () => {
   const navigate = useNavigate();
   const [unreadTotal, setUnreadTotal] = useState<number>(0);
-
-  // const _getUserInfo = async () => {
-  //   //1: login failed //2: login success
-
-  //   setInterval(() => {
-  //     const user = getUserCache(false);
-
-  //     if (!user) {
-  //       return;
-  //     }
-  //     const userDetailInfo = getUserDetailCache();
-  //     if (!userDetailInfo) {
-  //       return;
-  //     }
-  //     const { account_id, encrypted_pk } = userDetailInfo;
-  //     _fetch(account_id, encrypted_pk);
-  //   }, 1000 * 5);
-  // };
-
-  const _fetch = async (account_id: string, encrypted_pk: string) => {
-    const { code, data } = await getUnreadTotal({
-      account_id,
-      signature: encrypted_pk,
-    });
-    if (code === 2000) {
-      setUnreadTotal(data.total);
-    }
-  };
-
-  useEffect(() => {
-    // _getUserInfo();
-  }, []);
 
   return (
     <div

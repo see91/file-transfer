@@ -13,7 +13,6 @@ export type FilesByStatusForAllApplyAsUserRequestOptions = {
   pageSize?: number;
 }
 
-
 export const getApprovedFileContentByFileId: (args: ApprovedFileContentByFileIdRequestOptions) => Promise<any> = async (
   data
 ): Promise<unknown> => {
@@ -26,8 +25,4 @@ export const getFilesByStatusForAllApplyAsUser: (args: FilesByStatusForAllApplyA
   data
 ): Promise<unknown> => {
   return await axios.post('/apply/list', data)
-  // return isMock
-  //   ? await axios.post('/account/filesInfo')
-  //   : await sendMessageSync("getFilesByStatusForAllApplyAsUser", data);
-  // return await sendMessageSync("getFilesByStatusForAllApplyAsUser", data);
 };

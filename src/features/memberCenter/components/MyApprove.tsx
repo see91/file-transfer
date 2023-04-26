@@ -16,27 +16,15 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { AlertColor } from "@mui/material";
 import { useState, useEffect } from "react";
-import { formatDate, betweenDays } from "@/utils/format";
 import OvalButton from "@/components/Button/OvalButton";
-import {
-  // getFilesForNeedToApprovedAsPublisher, type FilesForNeedToApprovedRequestOptions,
-  // ApprovalUseFiles, type ApprovalUseFilesRequestOptions,
-  // getFilesInfoByStatus, type FilesInfoRequestByStatusRequestOptinos,
-  refuseApplicationOfUseFiles,
-  type RefuseApplicationOfUseFilesRequestOptions,
-  getFilesByStatusForAllApplyAsPublisher,
-  type FilesByStatusForAllApplyAsPublisherRequestOptions,
-} from "../api/account";
+import { getFilesByStatusForAllApplyAsPublisher } from "../api/account";
 import { locale } from "@/config";
 import { toDisplayAddress } from "@/utils/format";
-import {
-  useWalletPay,
-  type UseWalletPayRequestOptions,
-} from "@/features/auth/api/useWalletPay";
+import { type UseWalletPayRequestOptions } from "@/features/auth/api/useWalletPay";
 import { UsePopup } from "@/components/Popup";
 import Alert from "@/components/Layout/Alert";
 import storage from "@/utils/storage";
-import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
+import { cache_user_key } from "@/features/auth/api/getLoginedUserInfo";
 import { approve } from "@/unlinkagent/api";
 
 dayjs.extend(utc);
@@ -98,28 +86,6 @@ export const MyApprove = () => {
         return record.file_name;
       },
     },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-1")}`,
-    //   dataIndex: "created_at",
-    //   key: "created_at",
-    //   render: (_, record) => formatDate(record.created_at * 1000),
-    // },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-expiration-time")}`,
-    //   dataIndex: "end_at",
-    //   key: "end_at",
-    //   render: (_, record) =>
-    //     record.status > 1
-    //       ? record.end_at
-    //         ? formatDate(record.end_at * 1000)
-    //         : "~"
-    //       : "~",
-    // },
-    // {
-    //   title: `${t<string>("member-center-approve-table-title-1")}`,
-    //   dataIndex: "proposer_id",
-    //   key: "proposer_id",
-    // },
     {
       title: `${t<string>("member-center-apply-table-title-5")}`,
       dataIndex: "policy_id",
@@ -133,15 +99,6 @@ export const MyApprove = () => {
       align: "center" as "center",
       render: (_, record) => (status <= 1 ? record.days : "~"),
     },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-3")}`,
-    //   dataIndex: "useDay",
-    //   key: "useDay",
-    //   align: "center" as "center",
-    //   render: (_, record) => {
-    //     return betweenDays(record.start_at, record.end_at);
-    //   },
-    // },
     {
       title: `${t<string>("member-center-apply-table-title-4")}`,
       dataIndex: "status",
@@ -149,7 +106,6 @@ export const MyApprove = () => {
       render: (_, record) => locale.messages.fileApplyStatus[record.status],
     },
     {
-      // title: `${t<string>("member-center-apply-table-title-6")}`,
       dataIndex: "oprate",
       key: "oprate",
       render: (_, record) => {
@@ -201,15 +157,15 @@ export const MyApprove = () => {
   };
   const seeNote = async (record) => {
     setIsNoteModalVisible(true);
-    console.log("record", record);
     setCurrentRecord(record);
   };
   const handleClose = () => {
     setOpen(false);
   };
   const approveSubmit = async () => {
-    const { applyId, userAccountId } = useWalletParams as UseWalletPayRequestOptions;
-    await approve(applyId, userAccountId, currentRecord)
+    const { applyId, userAccountId } =
+      useWalletParams as UseWalletPayRequestOptions;
+    await approve(applyId, userAccountId, currentRecord);
   };
 
   const approveSuccessHandler = async (e) => {
@@ -220,12 +176,12 @@ export const MyApprove = () => {
         window.removeEventListener("message", approveSuccessHandler);
         alert("Approve Success!");
       }
-      if (responseData.subAction && responseData.subAction == 'relogin') {
+      if (responseData.subAction && responseData.subAction == "relogin") {
         const userInfo = {
           accountAddress: responseData.accountAddress,
           accountId: responseData.accountId,
-          publicKey: responseData.publicKey
-        }
+          publicKey: responseData.publicKey,
+        };
         storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
     }
@@ -237,11 +193,6 @@ export const MyApprove = () => {
     const user = storage.getItem("userinfo");
     setStatus(value);
     setPageIndex(1);
-    // const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
-    //   status: Number(value),
-    //   pageIndex: 1,
-    //   pageSize,
-    // };
     const params: any = {
       file_owner_id: user?.accountId,
       status: 0,
@@ -251,19 +202,14 @@ export const MyApprove = () => {
       },
     };
 
-    // console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params)).data;
+    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params))
+      .data;
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
 
   const pageChange = async (e, val) => {
     setPageIndex(val);
-    // const filesInfoParams: FilesByStatusForAllApplyAsPublisherRequestOptions = {
-    //   status,
-    //   pageIndex: val,
-    //   pageSize,
-    // };
     const user = storage.getItem("userinfo");
     const params: any = {
       file_owner_id: user?.accountId,
@@ -273,8 +219,8 @@ export const MyApprove = () => {
         page_size: 10,
       },
     };
-    // console.log("getFilesInfoByStatus send request data", filesInfoParams);
-    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params)).data;
+    const approvalList = (await getFilesByStatusForAllApplyAsPublisher(params))
+      .data;
     setApprovalList(approvalList?.list || []);
     setTotal(approvalList?.total || 0);
   };
@@ -292,7 +238,6 @@ export const MyApprove = () => {
       <div className="my_apply_select">
         <Select style={selectStyle} onChange={statusSelectHandler}>
           {locale.fields.fileApplyStatus.map((item) => {
-            // exclude value 0
             if (item.value === 0) return false;
             return (
               <Option key={item.label} value={item.value}>
@@ -318,7 +263,6 @@ export const MyApprove = () => {
       </div>
 
       <Modal
-        // title={t<string>("member-center-approve-table-btn")}
         title={"Details"}
         width="640px"
         destroyOnClose

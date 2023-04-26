@@ -1,6 +1,5 @@
-import { Row, Col, Table, Modal, Input, Form, Button, Select } from "antd";
+import { Row, Col, Modal, Form, Button, Select } from "antd";
 import {
-  UploadOutlined,
   ClockCircleFilled,
   CheckCircleFilled,
   CloseCircleFilled,
@@ -16,29 +15,20 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
-import { formatDate, betweenDays } from "@/utils/format";
-import { getFileDetail, type FileDetailRequestOptions } from "../api/find";
+import { formatDate } from "@/utils/format";
+import { getFileDetail } from "../api/find";
 import OvalButton from "@/components/Button/OvalButton";
 import {
-  applyPermissionForFiles,
-  type ApplyPermissionForFilesRequestOptions,
   getFilesForApprovedAsUser,
   type FilesForApprovedAsUserRequestOptions,
-  getApprovedFileContentByFileId,
-  type FilesForUploaderRequestOptions,
-  getContentAsUploaderByFileId,
-  type ApprovedFileContentByFileIdRequestOptions,
 } from "../api/apply";
 import { UsePopup } from "@/components/Popup";
-
 import type { FileApplyOptions } from "../types";
 import {
-  cache_user_key,
   getAvatarBase64String,
   getUserCache,
 } from "@/features/auth/api/getLoginedUserInfo";
-import {apply, ApplyInfo, encodeRequestData} from "@/unlinkagent/api";
-import storage from "@/utils/storage";
+import { apply, ApplyInfo } from "@/unlinkagent/api";
 import { download } from "@/unlinkagent/api";
 
 const btnStyle = {
@@ -75,37 +65,14 @@ export const FindDetail = () => {
    * @param values {usageDays: number}
    */
   const applyForFile = async (values) => {
-    const applyInfo:ApplyInfo = {
+    const applyInfo: ApplyInfo = {
       fileCreatorAddress: detailItem.creator_address,
       fileId: detailItem.file_id,
       fileName: detailItem.file_name,
-      usageDays: values.usageDays
-    }
-    await apply(applyInfo)
+      usageDays: values.usageDays,
+    };
+    await apply(applyInfo);
   };
-
-  /*const applySuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data);
-    const redirectUrl = responseData.redirectUrl;
-    if (
-      responseData &&
-      redirectUrl &&
-      redirectUrl == document.location.toString()
-    ) {
-      if (responseData.subAction && responseData.subAction == "relogin") {
-        const userInfo = {
-          accountAddress: responseData.accountAddress,
-          accountId: responseData.accountId,
-          publicKey: responseData.publicKey,
-        };
-        storage.setItem(cache_user_key, JSON.stringify(userInfo));
-      }
-      if (responseData.action == "apply" && responseData.result == "success") {
-        window.removeEventListener("message", applySuccessHandler);
-        window.location.reload();
-      }
-    }
-  };*/
 
   const _getFileDetail = async () => {
     const user = getUserCache();
@@ -168,7 +135,6 @@ export const FindDetail = () => {
       // get approved file list as account used
       const approveParams: FilesForApprovedAsUserRequestOptions = {};
       const approved = await getFilesForApprovedAsUser(approveParams);
-      console.log("approved", approved);
       setApprovedFileList(approved.list);
     })(user);
   };
@@ -177,31 +143,6 @@ export const FindDetail = () => {
     _getFileDetail();
   }, [location]);
 
-  // const columns = [
-  //   {
-  //     title: `${t<string>("find-detail-a-table-column-1")}`,
-  //     dataIndex: "created_at",
-  //     key: "created_at",
-  //     render: (_, record) => (
-  //       <span>{formatDate(record.created_at * 1000)}</span>
-  //     ),
-  //   },
-  //   {
-  //     title: `${t<string>("find-detail-a-table-column-2")}`,
-  //     dataIndex: "proposer_id",
-  //     key: "proposer_id",
-  //   },
-  //   {
-  //     title: `${t<string>("find-detail-a-table-column-3")}`,
-  //     dataIndex: "useDay",
-  //     key: "useDay",
-  //     align: "center" as "center",
-  //     render: (_, record) => (
-  //       <span>{betweenDays(record.apply_start_at, record.apply_end_at)}</span>
-  //     ),
-  //   },
-  // ];
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -209,7 +150,7 @@ export const FindDetail = () => {
     setIsModalVisible(true);
   };
   const fileDownload = async () => {
-    await download(detailItem)
+    await download(detailItem);
   };
 
   const IconCom = () => {
@@ -322,31 +263,15 @@ export const FindDetail = () => {
           <div className="find_detail_top_right">
             <div className="find_detail_top_right_title flex_row">
               <div>{detailItem.file_name}</div>
-              {/* <div>
-                <UploadOutlined
-                  style={{
-                    fontSize: "16px",
-                    color: "#df9100",
-                    marginRight: "8px",
-                  }}
-                />
-                0
-              </div> */}
             </div>
             <div className="find_detail_top_right_content">
-              <div
-                className="flex_row top_right_content_item mtb_30 pointer"
-                onClick={() => {
-                  navigate(`/creator/${detailItem.creator_id}`);
-                }}
-              >
+              <div className="flex_row top_right_content_item mtb_30 pointer">
                 <img
                   src={detailItem.creator_avatar || defaultAvatarImage}
                   alt=""
                 />
                 <div>
                   <div>{t<string>("find-detail-a-info-label-1")}</div>
-                  {/* <div>{t<string>("find-detail-account-address")}</div> */}
                   <div>{detailItem.owner}</div>
                 </div>
               </div>
@@ -366,14 +291,6 @@ export const FindDetail = () => {
                   {formatDate(detailItem.file_created_at * 1000)}
                 </div>
               </div>
-              {/* <div className="flex_row top_right_content_item">
-                <div className="left_color">Token ID：</div>
-                <div className="right_color">9518</div>
-              </div>
-              <div className="flex_row top_right_content_item">
-                <div className="left_color">Blockchain：</div>
-                <div className="right_color">Abey Chain</div>
-              </div> */}
             </div>
             {(applyStatus === null || !buttonShow) && (
               <div className="mart-30"></div>
@@ -430,10 +347,6 @@ export const FindDetail = () => {
           </div>
         </Col>
       </Row>
-      {/* <div className="find_detail_bottom">
-        <div className="find_detail_bottom_title">{t<string>("find-detail-a-table-title")}</div>
-        <Table columns={columns} dataSource={approvedFileList} pagination={false} />
-      </div> */}
       <Modal
         title={t<string>("find-detail-a-btn")}
         width="640px"
@@ -452,18 +365,16 @@ export const FindDetail = () => {
             usageDays: 1,
           }}
           onFinish={async (values: FileApplyOptions) => {
-            if (detailItem.status == 4){
-              await fileDownload()
+            if (detailItem.status == 4) {
+              await fileDownload();
             } else {
               await applyForFile(values);
             }
-            // onSuccess();
           }}
         >
           <div className="flex_row mar_0">
             <Form.Item
               label={t<string>("find-detail-a-modal-lable")}
-              // colon={false}
               name="usageDays"
             >
               <Select
@@ -500,8 +411,6 @@ export const FindDetail = () => {
                   },
                 ]}
               />
-              {/* <Input /> */}
-              {/* <span className="ml_20">{t<string>("find-detail-a-modal-day")}</span> */}
             </Form.Item>
             <div className="ml_20">{t<string>("find-detail-a-modal-day")}</div>
           </div>

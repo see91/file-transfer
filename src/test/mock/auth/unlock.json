@@ -1,8 +1,0 @@
-{
-  "jwt": "123456",
-  "user": {
-    "id": "000001",
-    "name": "Billy",
-    "respondCode": "200"
-  }
-}

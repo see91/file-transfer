@@ -4,17 +4,14 @@ import "./index.css";
 import "./i18n.ts";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-// mock
-import "./test/mock";
 
 const container = document.getElementById("root");
-const root = createRoot(container as Element); // createRoot(container!) if you use TypeScript
+const root = createRoot(container as Element);
 
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-/*   container */
 );
 
 // If you want to start measuring performance in your app, pass a function

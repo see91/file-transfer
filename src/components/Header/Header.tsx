@@ -7,15 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { defaultAvatarImage } from "@/utils/defaultImage";
 import { cache_user_key } from "@/features/auth/api/getLoginedUserInfo";
 
-import {
-  getAvatarBase64String,
-  getUserInfo,
-} from "@/features/auth/api/getLoginedUserInfo";
+import { getUserInfo } from "@/features/auth/api/getLoginedUserInfo";
 import { setIPFSNodeUrl } from "@/utils/ipfs";
 import { repeatInterval } from "@/utils/repeatInterval";
 import Emitter from "@/lib/emitter";
 import { USERINFO_UPDATE } from "@/lib/emitter-events";
-import { getUserDetailInfo } from "@/features/auth/api/getLoginedUserInfo";
 import { connect } from "@/unlinkagent/api";
 
 export const Header = ({ setLoginUser, setLoginStatus }) => {
@@ -63,14 +59,6 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
       setIPFSNodeUrl("/ip4/8.219.11.39/tcp/5001");
       setName(user.name);
       setLoginStatus(2);
-
-      const userDetailInfo = await getUserDetailInfo();
-      if (!!userDetailInfo.avatar) {
-        const avatarStr = await getAvatarBase64String(userDetailInfo.avatar);
-        if (!!avatarStr) {
-          setAvatar(avatarStr);
-        }
-      }
     } else {
       setUser(null);
       setLoginUser(null);
@@ -124,7 +112,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
           height="100%"
           viewBox="0 0 340.000000 250.000000"
           preserveAspectRatio="xMidYMid meet"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <rect
             data-v-70b83f88=""
@@ -133,7 +121,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
             width="100%"
             height="100%"
             fill="#fff"
-            fill-opacity="0"
+            fillOpacity="0"
           ></rect>{" "}
           <rect
             data-v-70b83f88=""
@@ -142,22 +130,19 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
             width="100%"
             height="100%"
             fill="url(#watermark)"
-            fill-opacity="1"
+            fillOpacity="1"
           ></rect>{" "}
           <g
             data-v-70b83f88=""
             fill="#df9100"
             transform="translate(46.30000305175781,92.21383285522461)"
           >
-            <g
-              transform="matrix(1,0,0,1,0,0)"
-              opacity="1"
-            >
+            <g transform="matrix(1,0,0,1,0,0)" opacity="1">
               <g>
                 <rect
                   fill="#333"
-                  fill-opacity="0"
-                  stroke-width="2"
+                  fillOpacity="0"
+                  strokeWidth="2"
                   x="0"
                   y="0"
                   width="60"
@@ -193,7 +178,6 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
             <g transform="translate(67.00000381469727,21.97116756439209)">
               <g
                 data-gra="path-name"
-                fill-rule=""
                 opacity="1"
                 transform="matrix(1,0,0,1,0,0)"
               >

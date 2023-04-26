@@ -24,13 +24,6 @@ axiosRetry(axios, {
     return /* retryCount * */ 1000;
   },
   retryCondition: (error) => {
-    // if retry condition is not specified, by default idempotent requests are retried
-    //return error.response.status === 503;
-    // if(typeof error?.response?.status === "number")
-    // {
-    //   return error.response.status.toString().startsWith("5");
-    // }
-    // return false;
     try {
       return [502, 503, 504].includes(error?.response?.status as number);
     } catch (e) {

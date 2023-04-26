@@ -5,22 +5,15 @@ import "../assets/myApply.less";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useState, useEffect } from "react";
-import { formatDate, betweenDays, toDisplayAddress } from "@/utils/format";
-import {
-  getApprovedFileContentByFileId,
-  type ApprovedFileContentByFileIdRequestOptions,
-  getFilesByStatusForAllApplyAsUser,
-  type FilesByStatusForAllApplyAsUserRequestOptions,
-} from "../api/apply";
+import { toDisplayAddress } from "@/utils/format";
+import { getFilesByStatusForAllApplyAsUser } from "../api/apply";
 import { locale } from "@/config";
 import OvalButton from "@/components/Button/OvalButton";
-import {decryptionRequestData} from "@/unlinkagent/types";
-import {encodeRequestData} from "@/unlinkagent/api";
 import storage from "@/utils/storage";
-import {cache_user_key} from "@/features/auth/api/getLoginedUserInfo";
-import {decrypt} from "@/utils/crypto";
-import {getData} from "@/utils/ipfs";
-import {download as fileDownload} from "@/unlinkagent/api";
+import { cache_user_key } from "@/features/auth/api/getLoginedUserInfo";
+import { decrypt } from "@/utils/crypto";
+import { getData } from "@/utils/ipfs";
+import { download as fileDownload } from "@/unlinkagent/api";
 dayjs.extend(utc);
 
 const { Option } = Select;
@@ -28,7 +21,6 @@ const selectStyle = {
   width: "130px",
 };
 export const MyApply = () => {
-  // const fileApplyStatusDefault = 1;
   const pageSize = 10;
   const [pageIndex, setPageIndex] = useState(1);
   const [applyList, setApplyList] = useState([]);
@@ -52,19 +44,6 @@ export const MyApply = () => {
       width: 200,
       key: "file_name",
     },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-1")}`,
-    //   dataIndex: "created_at",
-    //   key: "created_at",
-    //   render: (_, record) => formatDate(record.created_at * 1000),
-    // },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-expiration-time")}`,
-    //   dataIndex: "end_at",
-    //   key: "end_at",
-    //   render: (_, record) =>
-    //     record.status > 1 ? formatDate(record.end_at * 1000) : "~",
-    // },
     {
       title: `${t<string>("member-center-apply-table-title-3")}`,
       dataIndex: "days",
@@ -78,20 +57,6 @@ export const MyApply = () => {
       key: "policy_id",
       render: (_, record) => record.policy_id || "~",
     },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-8")}`,
-    //   dataIndex: "file_id",
-    //   key: "file_id",
-    // },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-3")}`,
-    //   dataIndex: "useDay",
-    //   key: "useDay",
-    //   align: "center" as "center",
-    //   render: (_, record) => {
-    //     return betweenDays(record.start_at, record.end_at);
-    //   },
-    // },
     {
       title: `${t<string>("member-center-apply-table-title-4")}`,
       dataIndex: "status",
@@ -99,7 +64,6 @@ export const MyApply = () => {
       render: (_, record) => locale.messages.fileApplyStatus[record.status],
     },
     {
-      // title: `${t<string>("member-center-apply-table-title-6")}`,
       dataIndex: "oprate",
       key: "oprate",
       render: (txt, record, index) => {
@@ -133,49 +97,50 @@ export const MyApply = () => {
         }
       },
     },
-    // {
-    //   title: `${t<string>("member-center-apply-table-title-7")}`,
-    //   dataIndex: 'hrac',
-    //   key: 'hrac',
-    // }
   ];
 
   const download = async (record) => {
-    record.proposer_address = currentRecord.proposer_address
-    await fileDownload(record)
+    record.proposer_address = currentRecord.proposer_address;
+    await fileDownload(record);
   };
 
   const authorizationSuccessHandler = async (e) => {
-    const responseData = JSON.parse(e.data)
-    const redirectUrl = responseData.redirectUrl
-    if (responseData && redirectUrl ) {
-      if (responseData.subAction && responseData.subAction == 'relogin') {
+    const responseData = JSON.parse(e.data);
+    const redirectUrl = responseData.redirectUrl;
+    if (responseData && redirectUrl) {
+      if (responseData.subAction && responseData.subAction == "relogin") {
         const userInfo = {
           accountAddress: responseData.accountAddress,
           accountId: responseData.accountId,
-          publicKey: responseData.publicKey
-        }
+          publicKey: responseData.publicKey,
+        };
         storage.setItem(cache_user_key, JSON.stringify(userInfo));
       }
-      if (responseData.action == 'decrypted' && responseData.result == 'success') {
-        if (!!responseData && responseData.url){
-          const uuid = localStorage.getItem("uuid")
-          const decryptUrl = decrypt(responseData.url, uuid).replaceAll('"','')
-          const arraybuffer = await getData(decryptUrl)
-          const blob = new Blob([arraybuffer], {type: "arraybuffer"});
+      if (
+        responseData.action == "decrypted" &&
+        responseData.result == "success"
+      ) {
+        if (!!responseData && responseData.url) {
+          const uuid = localStorage.getItem("uuid");
+          const decryptUrl = decrypt(responseData.url, uuid).replaceAll(
+            '"',
+            "",
+          );
+          const arraybuffer = await getData(decryptUrl);
+          const blob = new Blob([arraybuffer], { type: "arraybuffer" });
           let url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.style.display = "none";
           link.href = url;
-          link.setAttribute("download",responseData.fileName);
+          link.setAttribute("download", responseData.fileName);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         }
-        window.removeEventListener("message", authorizationSuccessHandler)
+        window.removeEventListener("message", authorizationSuccessHandler);
       }
     }
-  }
+  };
 
   const statusSelectHandler = async (value) => {
     const user = storage.getItem("userinfo");
@@ -183,7 +148,6 @@ export const MyApply = () => {
     setPageIndex(1);
     const params: any = {
       proposer_id: user?.accountId,
-      // signature: "1P3HfMIdhkA_CVuO09zDC",
       status: 0,
       paginate: {
         page: 1,
@@ -196,15 +160,9 @@ export const MyApply = () => {
   };
   const pageChange = async (e, val) => {
     setPageIndex(val);
-    // const params: FilesByStatusForAllApplyAsUserRequestOptions = {
-    //   status,
-    //   pageSize,
-    //   pageIndex: val,
-    // };
     const user = storage.getItem("userinfo");
     const params: any = {
       proposer_id: user?.accountId,
-      // signature: "1P3HfMIdhkA_CVuO09zDC",
       status: 0,
       paginate: {
         page: val,
@@ -221,7 +179,6 @@ export const MyApply = () => {
       <div className="my_apply_select">
         <Select style={selectStyle} onChange={statusSelectHandler}>
           {locale.fields.fileApplyStatus.map((item) => {
-            // exclude value 0
             if (item.value === 0) return false;
             return (
               <Option key={item.label} value={item.value}>
