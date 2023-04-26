@@ -31,7 +31,7 @@ export const MainLayout = ({ children }: ProviderProps) => {
             <Login loginStatus={loginStatus} />
           )}
 
-          <Footer />
+          {/* <Footer /> */}
         </BrowserRouter>
       </Layout>
     </>

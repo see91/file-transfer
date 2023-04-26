@@ -6,7 +6,7 @@ const Loading = () => {
     <div className="g-loading">
       <ReactLoading
         type={"spinningBubbles"}
-        color={"#503A86"}
+        color={"#df9100"}
         height={400}
         width={375}
       />

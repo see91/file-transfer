@@ -10,18 +10,18 @@
   line-height: 40px;
   border-radius: 4px;
   text-align: center;
-  border: 1px solid #7D92FF;
+  border: 1px solid #ba9756;
   background: #fff;
-  color: #7D92FF;
+  color: #ba9756;
   margin-left: 20px;
   cursor: pointer;
 }
 .my_strategy_top div.active {
-  background: #7D92FF;
+  background: #ba9756;
   color: #fff;
 }
 .my_strategy .oprate_text {
-  color: #7D92FF;
+  color: #ba9756;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
   cursor: pointer;

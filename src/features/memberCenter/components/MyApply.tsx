@@ -120,7 +120,7 @@ export const MyApply = () => {
           return (
             <div
               style={{
-                color: "#7D92FF",
+                color: "#ba9756",
                 cursor: "pointer",
                 textAlign: "center",
                 fontWeight: 600,

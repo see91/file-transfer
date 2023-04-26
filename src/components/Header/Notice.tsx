@@ -69,7 +69,7 @@ const Notice = () => {
           >
             <stop stopColor="#FFEA7D" />
             <stop offset="0.527145" stopColor="#F19090" />
-            <stop offset="1" stopColor="#7D92FF" />
+            <stop offset="1" stopColor="#ba9756" />
           </linearGradient>
         </defs>
       </svg>

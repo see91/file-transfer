@@ -52,7 +52,7 @@ const btnStyle = {
   color: "#fff",
 };
 const btnStyleOk = {
-  background: "#503A86",
+  background: "#df9100",
   marginLeft: "20px",
 };
 
@@ -326,7 +326,7 @@ export const FindDetail = () => {
                 <UploadOutlined
                   style={{
                     fontSize: "16px",
-                    color: "#503A86",
+                    color: "#df9100",
                     marginRight: "8px",
                   }}
                 />

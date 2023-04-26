@@ -9,7 +9,7 @@
   margin: 20px 0;
 }
 .my_apply_table .ant-table-thead > tr > th {
-  background: #150333;
+  background: #2b3a4b;
   color: #fff;
 }
 .my_apply_table .ant-table-thead > tr > th::before {
@@ -21,7 +21,7 @@
 .my_apply_table .oprate_btn {
   width: 130px;
   height: 32px;
-  background: #7D92FF;
+  background: #ba9756;
   border-radius: 100px;
   text-align: center;
   line-height: 32px;
@@ -29,7 +29,7 @@
   cursor: pointer;
 }
 .my_apply_table .oprate_text {
-  color: #7D92FF;
+  color: #ba9756;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
   cursor: pointer;
@@ -93,10 +93,10 @@
   line-height: 50px;
 }
 .approve_modal .ant-radio-inner:after {
-  background-color: #7D92FF;
+  background-color: #ba9756;
 }
 .approve_modal .ant-radio-checked .ant-radio-inner {
-  border-color: #7D92FF;
+  border-color: #ba9756;
 }
 .approve_modal .ant-input {
   min-height: 90px;

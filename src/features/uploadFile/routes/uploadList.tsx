@@ -17,7 +17,7 @@ const selectStyle = {
 const btnStyle = {
   width: "200px",
   height: "60px",
-  background: "#503A86",
+  background: "#df9100",
   borderRadius: "4px",
   color: "#fff",
   fontSize: "16px",

@@ -62,7 +62,7 @@ const btnStyle = {
   color: "#fff",
 };
 const btnStyleOk = {
-  background: "#503A86",
+  background: "#df9100",
   marginLeft: "20px",
 };
 export const MyApprove = () => {
@@ -165,7 +165,7 @@ export const MyApprove = () => {
             ) : (
               <div
                 style={{
-                  color: "#7D92FF",
+                  color: "#ba9756",
                   cursor: "pointer",
                   textAlign: "center",
                   fontWeight: 600,
