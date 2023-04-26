@@ -235,7 +235,7 @@ export const Header = ({ setLoginUser, setLoginStatus }) => {
                 />
               </div>
             </div>
-            <div className="tab_btn" onClick={_logout}>
+            <div className="tab_btn log_out_btn" onClick={_logout}>
               Logout
             </div>
           </>
